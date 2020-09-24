@@ -1,0 +1,39 @@
+.sprite {
+    width: 100%;
+    height: 12.5%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    resize: both;
+}
+
+.buf {
+    background-image: url(../img/buf.png);
+}
+
+.and {
+    background-image: url(../img/and.png);
+}
+
+.or {
+    background-image: url(../img/or.png);
+}
+
+.xor {
+    background-image: url(../img/xor.png);
+}
+
+.not {
+    background-image: url(../img/not.png);
+}
+
+.nand {
+    background-image: url(../img/nand.png);
+}
+
+.nor {
+    background-image: url(../img/nor.png);
+}
+
+.xnor {
+    background-image: url(../img/xnor.png);
+}
