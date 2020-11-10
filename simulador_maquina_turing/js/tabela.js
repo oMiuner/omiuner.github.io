@@ -55,8 +55,19 @@ let editarPrograma = () => {
                 document.getElementById("executarPrograma").style.visibility = "visible";
 
                 //Gerando vetores de acordo com entradas, separando por vírgula(,)
-                alfabeto_entrada = alfabeto_entrada.split(",");
+                alfabeto_entrada_original = alfabeto_entrada.split(",");
                 alfabeto_aux = alfabeto_aux.split(",");
+                alfabeto_entrada = [];
+                alfabeto_entrada_original.forEach(caractere => {
+                    if (!alfabeto_entrada.includes(caractere)) {
+                        alfabeto_entrada.push(caractere);
+                    }
+                });
+                alfabeto_aux.forEach(caractere => {
+                    if (!alfabeto_entrada.includes(caractere)) {
+                        alfabeto_entrada.push(caractere);
+                    }
+                });
                 estados = estados.split(",");
 
                 //Zerando a tabela para criar ela novamente
