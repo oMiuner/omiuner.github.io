@@ -1,8 +1,9 @@
 let tutorial = [
-    "Primeiro, insira os campos no formulario a esquerda.",
-    "Depois, clique em 'Editar Programa' para que seja gerada a tabela de transicoes possiveis",
-    "Preencha as celulas da tabela onde existem transicoes.",
-    "Clique em 'Executar Programa' para que o programa seja executado e o resultado apresentado.",
+    "Primeiro, insira os campos no formul\u00e1rio a esquerda.",
+    "Depois, clique em 'Editar Programa' para que seja gerada a tabela de transi\u00e7\u00f5es possiveis",
+    "Preencha as c\u00e9lulas da tabela onde existem transi\u00e7\u00f5es.",
+    "Clique em 'Executar Programa' para abrir a janela solicitando a fita de entrada.",
+    "Insira a fita e clique em OK para visualizar o resultado."
 ];
 
 let help = index => {
