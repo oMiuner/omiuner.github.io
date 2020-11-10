@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/swal.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Simulador de Máquinas de Turing</title>
+</head>
+<body>
+    <div class="container">
+        <div class="menu">
+            <div class="title">
+                <h2 class="text-center">Simulador de Máquinas de Turing</h2>
+                <h6>Feito por Gabriel Müller</h6>
+            </div>
+            <button id="help" onclick="help(0);">Ajuda?</button>
+        </div>
+        <div class="main">
+            <div class="lista-campos">
+                <form>
+                    <div class="campo">
+                        <label for="simbolos-entrada">Alfabeto dos símbolos de entrada:</label>
+                        <input type="text" id="simbolos-entrada" placeholder="0,1,a,A" />
+                    </div>
+                    <br />
+                    <div class="campo">
+                        <label for="simbolos-aux">Alfabeto auxiliar {¤,ß} contido em V:</label>
+                        <input type="text" id="simbolos-aux" />
+                    </div>
+                    <br />
+                    <div class="campo">
+                        <label for="estados">Estados possíveis da máquina:</label>
+                        <input type="text" id="estados" placeholder="q0,q1,q2" />
+                    </div>
+                    <br />
+                    <div class="campo">
+                        <label for="estado-inicial">Estado inicial da máquina (q0 pertence a Q):</label>
+                        <input type="text" id="estado-inicial" value="q0" />
+                    </div>
+                    <br />
+                    <div class="campo">
+                        <label for="estado-final">Estados finais da máquina (qn pertence a Q):</label>
+                        <input type="text" id="estados-finais" placeholder="qn" />
+                    </div>
+                    <br />
+                    <div class="campo">
+                        <label for="simbolo-branco">Símbolo especial "branco":</label>
+                        <input type="text" id="simbolo-branco" value="ß" />
+                    </div>
+                    <br />
+                    <div class="campo">
+                        <label for="simbolo-inicio">Símbolo de início de fita:</label>
+                        <input type="text" id="simbolo-inicio" value="¤" />
+                    </div>
+                    <br /><br />
+                    <div class="campo">
+                        <button onclick="editarPrograma();">Editar Programa</button>
+                    </div>
+                </form>
+            </div>
+
+            <table id="tabela" class="table">
+                <tbody></tbody>
+            </table>
+            <div id="executarPrograma">
+                <button onclick="lerFita();">Executar Programa</button>
+            </div>
+        </div>
+        <div id="resultadoPrograma">
+            <h3>Resultado:</h3>
+            <span>Resultado:<br /></span>
+        </div>
+
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" charset="utf-8"></script>
+    <script src="js/tabela.js"></script>
+    <script src="js/executar.js"></script>
+    <script src="js/help.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/grafo.js"></script>
+    <script src="js/erros.js"></script>
+    <script>
+        document.getElementById("executarPrograma").style.visibility = "hidden";
+        document.getElementById("resultadoPrograma").style.visibility = "hidden";
+    </script>
+</body>
+</html>
