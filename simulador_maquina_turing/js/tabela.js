@@ -62,13 +62,15 @@ let editarPrograma = () => {
                         alfabeto_entrada.push(caractere);
                     }
                 });
-                //Adiciona alfabeto auxiliar no alfabeto de entrada
-                alfabeto_aux = alfabeto_aux.split(",");
-                alfabeto_aux.forEach(caractere => {
-                    if (!alfabeto_entrada.includes(caractere)) {
-                        alfabeto_entrada.push(caractere);
-                    }
-                });
+                if (alfabeto_aux.length != 0) {
+                    //Adiciona alfabeto auxiliar no alfabeto de entrada
+                    alfabeto_aux = alfabeto_aux.split(",");
+                    alfabeto_aux.forEach(caractere => {
+                        if (!alfabeto_entrada.includes(caractere)) {
+                            alfabeto_entrada.push(caractere);
+                        }
+                    });
+                }
                 //Ajusta estados para não possuir repetições
                 estados_original = estados.split(",");
                 estados = [];
