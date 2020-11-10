@@ -54,21 +54,29 @@ let editarPrograma = () => {
                 //Exibindo botão para executar programaa
                 document.getElementById("executarPrograma").style.visibility = "visible";
 
-                //Gerando vetores de acordo com entradas, separando por vírgula(,)
+                //Ajusta alfabeto de entrada para não possuir repetições
                 alfabeto_entrada_original = alfabeto_entrada.split(",");
-                alfabeto_aux = alfabeto_aux.split(",");
                 alfabeto_entrada = [];
                 alfabeto_entrada_original.forEach(caractere => {
                     if (!alfabeto_entrada.includes(caractere)) {
                         alfabeto_entrada.push(caractere);
                     }
                 });
+                //Adiciona alfabeto auxiliar no alfabeto de entrada
+                alfabeto_aux = alfabeto_aux.split(",");
                 alfabeto_aux.forEach(caractere => {
                     if (!alfabeto_entrada.includes(caractere)) {
                         alfabeto_entrada.push(caractere);
                     }
                 });
-                estados = estados.split(",");
+                //Ajusta estados para não possuir repetições
+                estados_original = estados.split(",");
+                estados = [];
+                estados_original.forEach(estado => {
+                    if (!estados.includes(estado)) {
+                        estados.push(estado);
+                    }
+                });
 
                 //Zerando a tabela para criar ela novamente
                 tabela.deleteTHead();
