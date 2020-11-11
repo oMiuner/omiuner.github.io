@@ -152,4 +152,4 @@ let executarPrograma = fita => {
             }
         }
     }
-}
+};

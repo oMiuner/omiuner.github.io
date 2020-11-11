@@ -1,6 +1,9 @@
-let editarPrograma = () => {
-    //Evitando que a página atualize ao clicar no botão
+document.getElementById("editarPrograma").addEventListener("click", function (event) {
     event.preventDefault();
+    editarPrograma();
+});
+
+let editarPrograma = () => {
 
     //Omitindo campo de resultado que aparecerá após executar programa
     document.getElementById("resultadoPrograma").style.visibility = "hidden";
@@ -14,7 +17,7 @@ let editarPrograma = () => {
     let simbolo_branco = document.getElementById("simbolo-branco").value;
     let simbolo_inicio = document.getElementById("simbolo-inicio").value;
 
-    //Obtendo tabela e quantidade de linhas
+    //Obtendo tabela
     let tabela = document.getElementById("tabela");
 
     //Se o alfabeto de entrada for vazio, gera erro
@@ -118,7 +121,7 @@ let editarPrograma = () => {
             }
         }
     }
-}
+};
 
 //Criação do div que contem o primeiro select - estados
 let criar_div_estados = estados => {
@@ -197,4 +200,4 @@ let criar_div_movimentacao = () => {
     select_movimentacao.add(optionD);
     div_movimentacao.appendChild(select_movimentacao);
     return div_movimentacao;
-}
+};

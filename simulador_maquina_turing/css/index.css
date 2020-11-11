@@ -19,11 +19,14 @@
 
     .menu > button {
         color: white;
-        background-color: #0077ff;
+        background-color: #039be5;
+        margin: 10px;
+        font-size: 14px;
+        border-radius: 7px;
     }
 
 #tabela {
-    width: 69.8%;
+    width: 74.8%;
     height: 0;
     background-color: #222;
     color: white;
@@ -35,7 +38,7 @@
 
 .lista-campos {
     float: left;
-    width: 30%;
+    width: 25%;
     background-color: #222;
     color: white;
     display: inline-block;
@@ -56,7 +59,7 @@
     font-size: 18px;
     width: 100%;
     border-radius: 10px;
-    background-color: #44aa44;
+    background-color: #43a047;
     color: white;
 }
 
@@ -65,7 +68,7 @@
 }
 
 td > div {
-    width: 33%;
+    width: 100%;
 }
 
 select {
@@ -84,7 +87,7 @@ select {
 
     #executarPrograma > button {
         font-size: 18px;
-        width: 69.8%;
+        width: 75.8%;
         border-radius: 10px;
         background-color: #44aa44;
         color: white;
@@ -107,3 +110,24 @@ span {
     width: 100%;
     display: inline-block;
 }
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+    .inputfile + label {
+        color: white;
+        background-color: #039be5;
+        margin: 10px;
+        font-size: 14px;
+        border-radius: 7px;
+    }
+
+    .inputfile + label:hover{
+        cursor:pointer;
+    }

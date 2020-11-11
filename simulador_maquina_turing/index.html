@@ -19,6 +19,9 @@
                 <h6>Feito por Gabriel Müller</h6>
             </div>
             <button id="help" onclick="help(0);">Ajuda?</button>
+            <button id="Salvar Programa" onclick="salvarPrograma();">Salvar Programa</button>
+            <input type="file" name="file" id="file" class="inputfile" accept='text/plain' onchange='carregarPrograma(event)'/>
+            <label for="file">Carregar Programa</label>
         </div>
         <div class="main">
             <div class="lista-campos">
@@ -59,7 +62,7 @@
                     </div>
                     <br /><br />
                     <div class="campo">
-                        <button onclick="editarPrograma();">Editar Programa</button>
+                        <button id="editarPrograma">Editar Programa</button>
                     </div>
                 </form>
             </div>
@@ -85,6 +88,7 @@
     <script src="js/index.js"></script>
     <script src="js/grafo.js"></script>
     <script src="js/erros.js"></script>
+    <script src="js/save.js"></script>
     <script>
         document.getElementById("executarPrograma").style.visibility = "hidden";
         document.getElementById("resultadoPrograma").style.visibility = "hidden";

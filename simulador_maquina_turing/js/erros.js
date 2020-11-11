@@ -3,4 +3,4 @@ let gerarErro = texto => {
         title: texto,
         icon: "error",
     });
-}
+};
