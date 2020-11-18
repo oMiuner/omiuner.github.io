@@ -108,10 +108,10 @@ select {
         border-radius: 7px;
     }
 
-    span {
-        font-family: 'Courier New';
-        font-size: 18px;
-    }
+span {
+    font-family: 'Courier New';
+    font-size: 18px;
+}
 
 .main {
     background: #222;
@@ -136,6 +136,13 @@ select {
         border-radius: 7px;
     }
 
-    .inputfile + label:hover{
-        cursor:pointer;
-    }
+        .inputfile + label:hover {
+            cursor: pointer;
+        }
+
+#fita {
+    color: white;
+    width: 100%;
+    font-size: 18px;
+    overflow-x: scroll;
+}
