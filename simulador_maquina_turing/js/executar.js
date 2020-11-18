@@ -1,8 +1,23 @@
-let executarPrograma = fita => {
+let fita;
+let resultado;
+let breakCondition;
+let direcao;
+let etapa;
+let estado_atual;
+let i;
+let sucesso;
+
+let executarPrograma = fitaEntrada => {
+
+    fita = fitaEntrada;
+    resultado = "";
+    breakCondition = false;
+    direcao = 1;
+    etapa = 1;
+    i = etapa - 1;
+    sucesso = true;
 
     //Coletando informações da tela
-    let estado_atual = document.getElementById("estado-inicial").value;
-    let estados_finais = document.getElementById("estados-finais").value;
     let alfabeto_entrada = document.getElementById("simbolos-entrada").value;
     let simbolo_branco = document.getElementById("simbolo-branco").value;
     let simbolo_inicio = document.getElementById("simbolo-inicio").value;
@@ -10,7 +25,6 @@ let executarPrograma = fita => {
 
     //Separando arrays por vírgula(,)
     alfabeto_entrada = alfabeto_entrada.split(",")
-    estados_finais = estados_finais.split(",");
 
     //Concatenando todos os caracteres possíveis dentro da variável valores_possiveis
     let valores_possiveis = alfabeto_entrada;
@@ -33,7 +47,7 @@ let executarPrograma = fita => {
         document.getElementById("resultadoPrograma").style.visibility = "visible";
 
         //Coletando referência ao span que mostra o resultado e zerando o texto
-        let resultado = document.getElementById("resultadoPrograma").querySelector("span");
+        resultado = document.getElementById("resultadoPrograma").querySelector("span");
         resultado.innerText = "";
 
         //Coletando referência da tabela e número de linhas dela
@@ -89,67 +103,149 @@ let executarPrograma = fita => {
         //Exibindo fita incial
         resultado.innerText += "Fita inicial: " + fita;
         resultado.innerHTML += "<br />";
-
-        //1=Direita, -1=Esquerda -> representa sentido da fita
-        let direcao = 1;
-
-        //Contador que representa etapa sendo realizada, mostrada no resultado
-        let etapa = 1;
-
-        //Vira true quando o estado_atual for um dos estados finais
-        let breakCondition = false;
-
-        //Percorrendo fita
-        for (let i = 0; !breakCondition; i += direcao) {
-
-            //Procura a transição desejada no grafo
-            let transicao = getNodeTransicao(estado_atual, fita[i]);
-
-            //Adiciona simbolo branco no final da fita caso esteja trabalhando no último caractere dela
-            if (fita.length == i) {
-                fita += simbolo_branco;
-            }
-
-            //Verifica se o estado_atual é um dos estados finais
-            if (estados_finais.some(estado => estado === estado_atual)) {
-                breakCondition = true;
-            }
-
-            //Somente continua se o estado_atual não estiver na lista de estados finais
-            if (!breakCondition) {
-                //Se encontrar a transição, segue o fluxo
-                if (transicao) {
-                    //Alterando caractere da fita
-                    if (fita[i] == simbolo_branco) {
-                        fita += simbolo_branco;
-                    }
-                    fita = fita.replaceAt(i, transicao[2]);
-
-                    //Ajustando sentido da fita
-                    direcao = transicao[3] == "D" ? 1 : -1;
-                    resultado.innerText += etapa++ + ": " + estado_atual + "(" + transicao + ")";
-                    resultado.innerHTML += "&nbsp;";
-                    for (let j = 0; j < fita.length; j++) {
-                        if (j == i) {
-                            resultado.innerText += "(";
-                            resultado.innerText += fita[j];
-                            resultado.innerText += ")";
-                        }
-                        else {
-                            resultado.innerText += fita[j];
-                        }
-                    }
-                    resultado.innerHTML += "<br />";
-
-                    //Altera estado_atual para próximo estado, de acordo com a transição
-                    estado_atual = transicao[0];
-                }
-                //Se não encontrar, houve erro na edição do programa, exibir alerta bonitinho
-                else {
-                    gerarErro("Encontrado erro inesperado! Por favor, revise o programa e tente novamente.");
-                    break;
-                }
-            }
-        }
     }
 };
+
+let exibirCompleto = () => {
+    //Coletando valores da máquina
+    if (etapa == 1) estado_atual = document.getElementById("estado-inicial").value;
+    let simbolo_branco = document.getElementById("simbolo-branco").value;
+    let estados_finais = document.getElementById("estados-finais").value;
+
+    estados_finais = estados_finais.split(",");
+
+    //Percorrendo fita sem parar
+    while (!breakCondition) {
+        //Procura a transição desejada no grafo
+        let transicao = getNodeTransicao(estado_atual, fita[i]);
+
+        //Adiciona simbolo branco no final da fita caso esteja trabalhando no último caractere dela
+        if (fita.length == i) {
+            fita += simbolo_branco;
+        }
+
+        //Verifica se o estado_atual é um dos estados finais
+        if (estados_finais.some(estado => estado === estado_atual)) {
+            breakCondition = true;
+        }
+
+        //Somente continua se o estado_atual não estiver na lista de estados finais
+        if (!breakCondition) {
+            //Se encontrar a transição, segue o fluxo
+            if (transicao) {
+                //Alterando caractere da fita
+                if (fita[i] == simbolo_branco) {
+                    fita += simbolo_branco;
+                }
+                fita = fita.replaceAt(i, transicao[2]);
+
+                //Ajustando sentido da fita
+                direcao = transicao[3] == "D" ? 1 : -1;
+                resultado.innerText += etapa++ + ": " + estado_atual + "(" + transicao + ")";
+                resultado.innerHTML += "&nbsp;";
+                for (let j = 0; j < fita.length; j++) {
+                    if (j == i) {
+                        resultado.innerText += "(";
+                        resultado.innerText += fita[j];
+                        resultado.innerText += ")";
+                    }
+                    else {
+                        resultado.innerText += fita[j];
+                    }
+                }
+                resultado.innerHTML += "<br />";
+
+                //Altera estado_atual para próximo estado, de acordo com a transição
+                estado_atual = transicao[0];
+            }
+            //Se não encontrar, houve erro na edição do programa, exibir alerta bonitinho
+            else {
+                sucesso = false;
+                gerarErro("Encontrado erro inesperado! Por favor, revise o programa e tente novamente.");
+                break;
+            }
+        }
+        i += direcao;
+    }
+    validarSucesso();
+    ajustarTela();
+};
+
+let exibirPasso = () => {
+    //Coletando valores da máquina
+    if (etapa == 1) estado_atual = document.getElementById("estado-inicial").value;
+    let simbolo_branco = document.getElementById("simbolo-branco").value;
+    let estados_finais = document.getElementById("estados-finais").value;
+
+    estados_finais = estados_finais.split(",");
+
+    if (!breakCondition) {
+
+        //Procura a transição desejada no grafo
+        let transicao = getNodeTransicao(estado_atual, fita[i]);
+
+        //Adiciona simbolo branco no final da fita caso esteja trabalhando no último caractere dela
+        if (fita.length == i) {
+            fita += simbolo_branco;
+        }
+
+        //Verifica se o estado_atual é um dos estados finais
+        if (estados_finais.some(estado => estado === estado_atual)) {
+            breakCondition = true;
+        }
+
+        //Somente continua se o estado_atual não estiver na lista de estados finais
+        if (!breakCondition) {
+            //Se encontrar a transição, segue o fluxo
+            if (transicao) {
+                //Alterando caractere da fita
+                if (fita[i] == simbolo_branco) {
+                    fita += simbolo_branco;
+                }
+                fita = fita.replaceAt(i, transicao[2]);
+
+                //Ajustando sentido da fita
+                direcao = transicao[3] == "D" ? 1 : -1;
+                resultado.innerText += etapa++ + ": " + estado_atual + "(" + transicao + ")";
+                resultado.innerHTML += "&nbsp;";
+                for (let j = 0; j < fita.length; j++) {
+                    if (j == i) {
+                        resultado.innerText += "(";
+                        resultado.innerText += fita[j];
+                        resultado.innerText += ")";
+                    }
+                    else {
+                        resultado.innerText += fita[j];
+                    }
+                }
+                resultado.innerHTML += "<br />";
+
+                //Altera estado_atual para próximo estado, de acordo com a transição
+                estado_atual = transicao[0];
+            }
+            //Se não encontrar, houve erro na edição do programa, exibir alerta bonitinho
+            else {
+                sucesso = false;
+                gerarErro("Encontrado erro inesperado! Por favor, revise o programa e tente novamente.");
+            }
+        }
+        i += direcao;
+    }
+    else {
+        validarSucesso();
+    }
+    ajustarTela();
+};
+
+let ajustarTela = () => {
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+let validarSucesso = () => {
+    if (sucesso) {
+        gerarAlerta("Programa finalizado!");
+    }
+    else {
+        gerarErro("Encontrado erro inesperado! Por favor, revise o programa e tente novamente.");
+    }
+}
