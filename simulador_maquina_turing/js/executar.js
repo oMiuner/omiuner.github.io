@@ -4,7 +4,7 @@ let breakCondition;
 let direcao;
 let etapa;
 let estado_atual;
-let i;
+let indexFita;
 let sucesso;
 
 let executarPrograma = fitaEntrada => {
@@ -14,7 +14,7 @@ let executarPrograma = fitaEntrada => {
     breakCondition = false;
     direcao = 1;
     etapa = 1;
-    i = etapa - 1;
+    indexFita = 0;
     sucesso = true;
 
     //Coletando informações da tela
@@ -104,6 +104,7 @@ let executarPrograma = fitaEntrada => {
         resultado.innerText += "Fita inicial: " + fita;
         resultado.innerHTML += "<br />";
     }
+    ajustarTela();
 };
 
 let exibirCompleto = () => {
@@ -117,10 +118,10 @@ let exibirCompleto = () => {
     //Percorrendo fita sem parar
     while (!breakCondition) {
         //Procura a transição desejada no grafo
-        let transicao = getNodeTransicao(estado_atual, fita[i]);
+        let transicao = getNodeTransicao(estado_atual, fita[indexFita]);
 
         //Adiciona simbolo branco no final da fita caso esteja trabalhando no último caractere dela
-        if (fita.length == i) {
+        if (fita.length == indexFita) {
             fita += simbolo_branco;
         }
 
@@ -131,20 +132,22 @@ let exibirCompleto = () => {
 
         //Somente continua se o estado_atual não estiver na lista de estados finais
         if (!breakCondition) {
+            //Atualiza div da fita na tela
+            atualizarDivFita();
             //Se encontrar a transição, segue o fluxo
             if (transicao) {
                 //Alterando caractere da fita
-                if (fita[i] == simbolo_branco) {
+                if (fita[indexFita] == simbolo_branco) {
                     fita += simbolo_branco;
                 }
-                fita = fita.replaceAt(i, transicao[2]);
+                fita = fita.replaceAt(indexFita, transicao[2]);
 
                 //Ajustando sentido da fita
                 direcao = transicao[3] == "D" ? 1 : -1;
                 resultado.innerText += etapa++ + ": " + estado_atual + "(" + transicao + ")";
                 resultado.innerHTML += "&nbsp;";
                 for (let j = 0; j < fita.length; j++) {
-                    if (j == i) {
+                    if (j == indexFita) {
                         resultado.innerText += "(";
                         resultado.innerText += fita[j];
                         resultado.innerText += ")";
@@ -165,9 +168,12 @@ let exibirCompleto = () => {
                 break;
             }
         }
-        i += direcao;
+        //Muda a posição da fita a ser analisada na próxima ocorrência
+        indexFita += direcao;
     }
+    //Exibe alerta sucesso ou erro
     validarSucesso();
+    //Move a tela para o mais baixo possível
     ajustarTela();
 };
 
@@ -182,10 +188,10 @@ let exibirPasso = () => {
     if (!breakCondition) {
 
         //Procura a transição desejada no grafo
-        let transicao = getNodeTransicao(estado_atual, fita[i]);
+        let transicao = getNodeTransicao(estado_atual, fita[indexFita]);
 
         //Adiciona simbolo branco no final da fita caso esteja trabalhando no último caractere dela
-        if (fita.length == i) {
+        if (fita.length == indexFita) {
             fita += simbolo_branco;
         }
 
@@ -196,20 +202,22 @@ let exibirPasso = () => {
 
         //Somente continua se o estado_atual não estiver na lista de estados finais
         if (!breakCondition) {
+            //Atualiza div da fita na tela
+            atualizarDivFita();
             //Se encontrar a transição, segue o fluxo
             if (transicao) {
                 //Alterando caractere da fita
-                if (fita[i] == simbolo_branco) {
+                if (fita[indexFita] == simbolo_branco) {
                     fita += simbolo_branco;
                 }
-                fita = fita.replaceAt(i, transicao[2]);
+                fita = fita.replaceAt(indexFita, transicao[2]);
 
                 //Ajustando sentido da fita
                 direcao = transicao[3] == "D" ? 1 : -1;
                 resultado.innerText += etapa++ + ": " + estado_atual + "(" + transicao + ")";
                 resultado.innerHTML += "&nbsp;";
                 for (let j = 0; j < fita.length; j++) {
-                    if (j == i) {
+                    if (j == indexFita) {
                         resultado.innerText += "(";
                         resultado.innerText += fita[j];
                         resultado.innerText += ")";
@@ -229,11 +237,14 @@ let exibirPasso = () => {
                 gerarErro("Encontrado erro inesperado! Por favor, revise o programa e tente novamente.");
             }
         }
-        i += direcao;
+        //Muda a posição da fita a ser analisada na próxima ocorrência
+        indexFita += direcao;
     }
     else {
+        //Exibe alerta sucesso ou erro
         validarSucesso();
     }
+    //Move a tela para o mais baixo possível
     ajustarTela();
 };
 
@@ -241,6 +252,7 @@ let ajustarTela = () => {
     window.scrollTo(0, document.body.scrollHeight);
 }
 
+//Exibe alerta sucesso ou erro
 let validarSucesso = () => {
     if (sucesso) {
         gerarAlerta("Programa finalizado!");
@@ -248,4 +260,27 @@ let validarSucesso = () => {
     else {
         gerarErro("Encontrado erro inesperado! Por favor, revise o programa e tente novamente.");
     }
+}
+
+let atualizarDivFita = () => {
+    let simbolo_branco = document.getElementById("simbolo-branco").value;
+
+    let textoFita = fita;
+    let textoFinal = "";
+    if (textoFita.length < 50) {
+        textoFita += simbolo_branco.repeat(50 - textoFita.length);
+    }
+
+    for (let i = 0; i < textoFita.length - 1; i++) {
+        let textoAdicao = textoFita[i];
+        if (indexFita == i) {
+            textoAdicao = '<span style="color:#44aa44;">' + textoAdicao + '</span>';
+        }
+        textoFinal += textoAdicao + " | ";
+    }
+    textoFinal += textoFita[textoFita.length - 1];
+
+    console.log(textoFinal);
+    document.getElementById("fita").innerHTML = textoFinal;
+
 }
