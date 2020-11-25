@@ -160,18 +160,17 @@ let exibirPasso = () => {
 
             //Ajustando sentido da fita
             direcao = transicao[3] == "D" ? 1 : -1;
-            resultado.innerText += etapa++ + ": " + estado_atual + "(" + transicao + ")";
-            resultado.innerHTML += "&nbsp;";
+
+            let adicao = etapa++ + ": " + estado_atual + "(" + transicao + ") -> ";
             for (let j = 0; j < fita.length; j++) {
                 if (j == indexFita) {
-                    resultado.innerText += "(";
-                    resultado.innerText += fita[j];
-                    resultado.innerText += ")";
+                    adicao += "(" + fita[j] + ")";
                 }
                 else {
-                    resultado.innerText += fita[j];
+                    adicao += fita[j];
                 }
             }
+            resultado.innerText += adicao;
             resultado.innerHTML += "<br />";
 
             //Altera estado_atual para próximo estado, de acordo com a transição
