@@ -6,7 +6,6 @@ let lerFita = () => {
         closeOnEsc: false,
         closeOnClickOutside: false,
     }).then(fita => {
-        console.log(fita);
         if (fita === "") {
             gerarErro("A fita n\u00e3o pode estar vazia!");
             return false;
