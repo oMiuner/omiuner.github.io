@@ -1,0 +1,81 @@
+:root {
+	--cor-bg-1: rgba(0, 255, 176, 1);
+	--cor-bg-2: rgba(0, 176, 255, 1);
+	--cor-bg-3: rgba(0,0,0,0);
+	--border-size: 0.5vh;
+	--border-length: 25vh;
+}
+
+body,
+html {
+	/* Remover margem e padding geral para evitar scrollbar ao usar 100vh */
+	margin: 0;
+	padding: 0;
+
+	/* Define fonte da página */
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Centralizar tudo, definir tamanho máximo e cor do background */
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-width: 100%;
+	min-height: 100vh;
+	background-color: #252525;
+}
+
+.container {
+	background-image: /* Direita */ linear-gradient(var(--cor-bg-3), var(--cor-bg-2), var(--cor-bg-1)),
+		/* Baixo */ linear-gradient(to left, var(--cor-bg-1), var(--cor-bg-2), var(--cor-bg-3)),
+		/* Esquerda */ linear-gradient(var(--cor-bg-1), var(--cor-bg-2), var(--cor-bg-3)),
+		/* Cima */ linear-gradient(to left, var(--cor-bg-3), var(--cor-bg-2), var(--cor-bg-1)),
+		linear-gradient(transparent, transparent);
+
+	border-radius: var(--border-size);
+	background-repeat: no-repeat;
+	background-size: 
+		var(--border-size) var(--border-length), 
+		var(--border-length) var(--border-size),
+		var(--border-size) var(--border-length), 
+		var(--border-length) var(--border-size),
+		calc(100% - var(--border-size) - var(--border-size)) calc(100% - var(--border-size) - var(--border-size));
+
+	background-position: 
+		right bottom, 
+		right bottom, 
+		left top, 
+		left top, 
+		var(--border-size) var(--border-size);
+
+	height: 90vh;
+	width: 70vw;
+
+	color: white;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.interno {
+	width: calc(50% - var(--border-size));
+	height: calc(100% - var(--border-size) - var(--border-size));
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+a {
+	color: white;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+a:hover {
+	letter-spacing: 0.3px;
+	font-weight: bold;
+}
