@@ -1,0 +1,115 @@
+.operador {
+    width: 89.8%;
+    height: 0;
+    background-color: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 7px;
+    touch-action: none;
+    float: right;
+}
+
+    .operador.over {
+        border: 5px solid #5f5;
+    }
+
+.operador-item {
+    width: 90%;
+    height: 100%;
+    border: 2px solid #666;
+    border-radius: 5%;
+    align-content:center;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    resize: both;
+}
+
+    .operador-item.variavel {
+        color: white;
+        font-size: xx-large;
+        background-color: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .operador-item:active {
+        background-color: rgba(168, 218, 220, 1.00);
+    }
+
+    .operador-item:hover {
+        cursor: pointer;
+        border-width: 4px;
+    }
+
+.container {
+    width: 100%;
+}
+
+.lista-operadores {
+    float: left;
+    width: 10%;
+    background-color: #222;
+    color: white;
+    display: inline-block;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 7px;
+    padding: 10px;
+}
+
+.selecionavel {
+    cursor: pointer;
+}
+
+.entradas {
+    height: 100%;
+    width: 5%;
+    display: flex;
+    flex-direction: column;
+}
+
+.entrada {
+    width: 100%;
+    height: 10%;
+    border-radius: 100%;
+    border: 1px solid #aaa;
+    margin: auto;
+    cursor: pointer;
+}
+
+.saida {
+    width: 5%;
+    height: 10%;
+    border-radius: 100%;
+    border: 1px solid #aaa;
+    margin: auto;
+    cursor: pointer;
+}
+
+.clicado {
+    border: 3px solid #5f5;
+}
+
+    .clicado.erro {
+        border: 3px solid #f55;
+    }
+
+.operador-logico {
+    text-align: center;
+    width: 10%;
+    height: 15%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    touch-action: none;
+    user-select: none;
+    align-content: center;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    resize: both;
+}
