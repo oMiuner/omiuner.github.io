@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Desenhe círculos no canvas</title>
+  </head>
+  <body>
+    <canvas id="myCanvas" style="position:absolute; top:0; bottom:0; left:0; right:0; width:100%; height:100%;"></canvas>
+    <script>
+      var canvas = document.getElementById('myCanvas');
+      var ctx = canvas.getContext('2d');
+      var isMouseDown = false;
+      var currentX;
+      var currentY;
+      var selectedCircleIndex;
+      
+      // Adiciona um ouvinte de eventos para clicar no canvas
+      canvas.addEventListener('mousedown', function(event) {
+        isMouseDown = true;
+        currentX = event.clientX;
+        currentY = event.clientY;
+        
+        // Verifica se o clique foi dentro de algum círculo
+        for (var i = 0; i < circles.length; i++) {
+          var dx = circles[i].x - currentX;
+          var dy = circles[i].y - currentY;
+          var distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < circles[i].radius) {
+            selectedCircleIndex = i;
+            break;
+          }
+        }
+      });
+      
+      // Adiciona um ouvinte de eventos para o movimento do mouse no canvas
+      canvas.addEventListener('mousemove', function(event) {
+        if (isMouseDown && selectedCircleIndex !== undefined) {
+          var x = event.clientX;
+          var y = event.clientY;
+          
+          // Define as novas coordenadas do círculo com base no deslocamento do mouse
+          circles[selectedCircleIndex].x += x - currentX;
+          circles[selectedCircleIndex].y += y - currentY;
+          
+          // Desenha todos os círculos no canvas
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (var i = 0; i < circles.length; i++) {
+            ctx.beginPath();
+            ctx.arc(circles[i].x, circles[i].y, circles[i].radius, 0, 2 * Math.PI);
+            ctx.fill();
+          }
+          
+          currentX = x;
+          currentY = y;
+        }
+      });
+      
+      // Adiciona um ouvinte de eventos para soltar o clique do mouse no canvas
+      canvas.addEventListener('mouseup', function(event) {
+        // Define a variável isMouseDown como false para indicar que o mouse não está mais pressionado
+        isMouseDown = false;
+        selectedCircleIndex = undefined;
+      });
+      
+      // Array para armazenar todos os círculos desenhados no canvas
+      var circles = [];
+      
+      // Desenha um círculo na posição (x, y) com o raio especificado
+      function drawCircle(x, y, radius) {
+        circles.push({x: x, y: y, radius: radius});
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      
+      // Desenha um círculo aleatório no canvas
+      function drawRandomCircle() {
+        var x = Math.floor(Math.random() * canvas.width);
+        var y = Math.floor(Math.random() * canvas.height);
+        var radius = Math.floor(Math.random() * 50) + 10;
+        drawCircle(x, y, radius);
+      }
+      
+      // Adiciona 10 círculos aleatórios no canvas
+      for (var i = 0; i < 10; i++) {
+        drawRandomCircle();
+      }
+    </script>
+  </body>
+</html>
+

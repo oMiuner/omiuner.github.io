@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="js/index.js"></script>
+	<script src="https://unpkg.com/konva@8.4.2/konva.min.js"></script>
+    <title>Simulador Autômatos Finitos</title>
+</head>
+<body>
+	<div class="header">
+		<div class="header-options"></div>
+		<h1 class="header-title">Simulador de Autômatos Finitos</h1>
+		<div class="header-options">
+			<!-- Botões contato / código -->
+		</div>
+	</div>
+
+    <div class="container">
+		<div class="menu">
+			<p>Ação do clique:</p>
+			<button id="opt-1" onclick="updateSelectedMenuItem(this.id)" class="menu-item menu-item-selected">Ver / Mover</button>
+			<button id="opt-2" onclick="updateSelectedMenuItem(this.id)" class="menu-item">Novo Estado</button>
+			<button id="opt-3" onclick="updateSelectedMenuItem(this.id)" class="menu-item">2</button>
+		</div>
+		<div id="tela" class="tela" onclick="handleClick(event)">
+		
+		</div>
+    </div>
+	<script>
+		onStart();
+	</script>
+</body>
+</html>
