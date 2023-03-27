@@ -153,13 +153,3 @@ button {
 	cursor: pointer;
 	outline: inherit;
 }
-
-img {
-	position: absolute;
-	max-width: 50px;
-	max-height: 50px;
-}
-
-img:hover {
-	cursor: pointer;
-}
