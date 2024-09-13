@@ -125,6 +125,64 @@
         .help-btn:hover {
             background-color: #e0e0e0;
         }
+
+        /* Modal de vitória */
+        .modal {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .modal h2 {
+            font-size: 2em;
+            margin: 0 0 20px;
+        }
+
+        .modal p {
+            font-size: 1.3em;
+        }
+
+        /* Fundo escurecido */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
+        /* Mostrar o modal */
+        .modal.show,
+        .overlay.show {
+            display: block;
+        }
+
+        /* Botão de fechar o modal */
+        .close-btn {
+            background-color: #4a90e2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .close-btn:hover {
+            background-color: #357ab8;
+        }
     </style>
 </head>
 
@@ -159,6 +217,14 @@
         <div id="log-container" class="space-y-2">
             <!-- Logs serão gerados aqui -->
         </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="modal" id="modal-vencedor">
+        <h2>Temos um vencedor!</h2>
+        <p id="vencedor-nome">Nome do Vencedor</p>
+        <p>Parabéns por atingir 6 pontos!</p>
+        <button class="close-btn" id="close-btn">Fechar</button>
     </div>
 
     <script>
@@ -289,10 +355,29 @@
             // Procura vencedor (após atualizar ranking, porque mais de um pode vencer ao mesmo tempo)
             players.forEach(player => {
                 if (player.acertos == 6) {
-                    winnerList.push(player.username);
-                    //document.getElementById('sortear-btn').disabled = true;
+                    if (!winnerList.some(pl => pl.username == player.username)) {
+                        winnerList.push(player.username);
+
+                        // Exibe o modal com o nome do vencedor
+                        const modal = document.getElementById('modal-vencedor');
+                        const overlay = document.getElementById('overlay');
+                        document.getElementById('vencedor-nome').innerText = player.username;
+
+                        // Mostra o modal e o overlay
+                        modal.classList.add('show');
+                        overlay.classList.add('show');
+                    }
                 }
             });
+        }
+
+        // Função para fechar o modal e o overlay
+        function fecharModal() {
+            const modal = document.getElementById('modal-vencedor');
+            const overlay = document.getElementById('overlay');
+
+            modal.classList.remove('show');
+            overlay.classList.remove('show');
         }
 
         // Função para atualizar o ranking
@@ -336,10 +421,33 @@
         // Chama a função de busca quando a página carregar
         fetchSkins();
 
-        // Adiciona o evento ao botão
+        // Adiciona o evento aos botões
         document.getElementById('sortear-btn').addEventListener('click', sortearItem);
         document.getElementById('help-btn').addEventListener('click', function () {
             window.open('ajuda.html', '_blank'); // Redireciona para a página ajuda.html
+        });
+        // Fechar ao clicar no botão "Fechar"
+        document.getElementById('close-btn').addEventListener('click', fecharModal);
+
+        // Fechar ao clicar no overlay
+        document.getElementById('overlay').addEventListener('click', fecharModal);
+
+        // Fechar ao apertar a tecla "Esc"
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                fecharModal();
+            }
+        });// Fechar ao clicar no botão "Fechar"
+        document.getElementById('close-btn').addEventListener('click', fecharModal);
+
+        // Fechar ao clicar no overlay
+        document.getElementById('overlay').addEventListener('click', fecharModal);
+
+        // Fechar ao apertar a tecla "Esc"
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                fecharModal();
+            }
         });
 
         playerList.innerHTML = ''; // Limpa a lista antes de renderizar
