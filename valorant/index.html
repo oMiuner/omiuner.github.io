@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteador de Itens</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./tmi.min.js"></script>
+    <style>
+        .ranking-container {
+            margin-bottom: 20px;
+            /* Espaço entre o ranking e o botão de sortear */
+            padding: 10px;
+            background-color: #f9fafb;
+            border: 1px solid #ddd;
+            max-height: 200px;
+            /* Limita a altura do contêiner do ranking */
+            overflow-y: auto;
+            /* Adiciona rolagem se o conteúdo for maior que o contêiner */
+        }
+
+        .ranking-item {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Define um tamanho fixo para as imagens da lista */
+        .item-image {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            position: relative;
+            z-index: 0;
+            /* Coloca a imagem acima do background */
+        }
+
+        /* Adiciona uma borda para visualizar melhor o efeito */
+        .item-image.highlight-background {
+            border: 5px solid green;
+        }
+
+        /* Define o container principal com display flex e orientação de coluna */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            /* 100% da altura da tela */
+        }
+
+        /* Botão fixo que ocupa 10% da altura da tela */
+        .fixed-button {
+            height: 10vh;
+            /* 10% da altura da tela */
+            background-color: #2563eb;
+            /* Azul Tailwind */
+            color: white;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            padding: 0 20px;
+        }
+
+        /* Log central que ocupa 90% da altura da tela e permite rolagem */
+        .log-container {
+            height: 90vh;
+            /* 90% da altura da tela */
+            overflow-y: auto;
+            /* Habilita rolagem vertical */
+            background-color: white;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Estilo para cada item no log */
+        .log-item {
+            padding: 10px;
+            background-color: #f3f4f6;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+
+        /* Classe para adicionar um background à imagem */
+        .highlight-background {
+            position: relative;
+            /* Necessário para posicionar o background */
+        }
+
+        .highlight-background::before {
+            content: '';
+            /* Adiciona um pseudo-elemento */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 255, 0, 0.5);
+            /* Cor verde semitransparente */
+            z-index: 1;
+            /* Coloca o background atrás do conteúdo da imagem */
+            pointer-events: none;
+            /* Permite clicar na imagem normalmente */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 h-screen flex">
+
+    <!-- Lista lateral esquerda -->
+    <div class="w-3/5 bg-white border-r border-gray-300 overflow-y-auto p-4">
+        <ul id="player-list">
+            <!-- Lista de nomes e imagens será gerada dinamicamente aqui -->
+        </ul>
+    </div>
+
+    <!-- Centro da tela com o botão e o log -->
+    <div class="main-container">
+        <div id="ranking-container" class="ranking-container">
+            <!-- O ranking será exibido aqui -->
+        </div>
+        <!-- Botão que ocupa 10% da tela -->
+        <button id="sortear-btn" class="fixed-button">Sortear novo item</button>
+
+        <!-- Log que ocupa 90% da tela -->
+        <div id="log-central" class="log-container">
+            <!-- Logs dos itens sorteados serão adicionados aqui -->
+        </div>
+    </div>
+
+    <!-- Log lateral direita -->
+    <div class="w-1/5 bg-gray-200 p-4 overflow-y-auto">
+        <div id="log-container" class="space-y-2">
+            <!-- Logs serão gerados aqui -->
+        </div>
+    </div>
+
+    <script>
+        let playerList = document.getElementById('player-list');
+        let skinList = [];
+        let itensSorteaveis = [];
+        let itensSorteados = [];
+        let winnerList = [];
+
+        const client = new tmi.Client({
+            channels: ['sacy']
+        });
+        client.connect();
+
+        client.on('message', (channel, tags, message, self) => {
+            // Ignore echoed messages.
+            if (self) return;
+
+            updateChatLog(tags, message);
+
+            // remove later
+            if (itensSorteados.length == 0) {
+                tryToAddPlayer(tags, message);
+            }
+            // if (message.toLowerCase().startsWith('!participar' && itensSorteados.length == 0)) {
+            //     tryToAddPlayer(tags, message);
+            // }
+        });
+
+        let players = [];
+
+        function updateChatLog(tags, message) {
+            // Atualiza o log lateral
+            const logContainer = document.getElementById('log-container');
+            const newLog = document.createElement('span');
+            newLog.innerHTML = `<b>${tags.username}</b>: ${message}`;
+            newLog.className = winnerList.includes(tags.username) ? 'block bg-yellow-400 p-2 border border-gray-300 rounded' : 'block bg-white p-2 border border-gray-300 rounded';
+
+            logContainer.appendChild(newLog);
+
+            // Se houver mais de 15 logs, remover o mais antigo
+            if (logContainer.children.length > 15) {
+                logContainer.removeChild(logContainer.children[0]);
+            }
+        }
+
+        function tryToAddPlayer(tags, message) {
+            if (!players.find(p => p.username.toLowerCase() == tags.username.toLowerCase())) {
+                // let idList = message.split('!participar ')[1].split(/,\s*/);
+                // if (idList.length == 6) {
+                const listItem = document.createElement('li');
+                listItem.className = 'mb-4 flex justify-between items-center';
+
+                const itemName = document.createElement('span');
+                itemName.textContent = tags.username;
+                itemName.className = 'font-bold mr-2';
+
+                const imagesDiv = document.createElement('div');
+                imagesDiv.className = 'flex';
+                let itensDoPlayer = [];
+                // for (let i = 0; i < idList.length; i++) {
+                //     let id = idList[i].trim();
+                //     itensDoPlayer.push(id);
+                // }
+                itensDoPlayer.push(skinList[Math.floor(Math.random() * skinList.length)].id);
+                itensDoPlayer.push(skinList[Math.floor(Math.random() * skinList.length)].id);
+                itensDoPlayer.push(skinList[Math.floor(Math.random() * skinList.length)].id);
+                itensDoPlayer.push(skinList[Math.floor(Math.random() * skinList.length)].id);
+                itensDoPlayer.push(skinList[Math.floor(Math.random() * skinList.length)].id);
+                itensDoPlayer.push(skinList[Math.floor(Math.random() * skinList.length)].id);
+                itensDoPlayer.forEach(item => {
+                    let completeItem = skinList.find(sk => sk.id == item);
+                    const img = document.createElement('img');
+                    img.src = completeItem.image;
+                    img.alt = completeItem.name;
+                    img.dataset.id = completeItem.id;
+                    img.dataset.player = completeItem.username;
+                    img.className = 'item-image mr-1';
+                    imagesDiv.appendChild(img);
+                });
+
+                listItem.appendChild(itemName);
+                listItem.appendChild(imagesDiv);
+
+                playerList.appendChild(listItem);
+                players.push({ username: tags.username, itens: itensDoPlayer, acertos: 0 });
+                updateRanking();
+                let adicionarItens = [];
+                itensDoPlayer.forEach(item => adicionarItens.push(skinList.find(it => it.id == item)));
+                adicionarItensParaSeremSorteados(adicionarItens);
+            }
+            //}
+        }
+
+        function adicionarItensParaSeremSorteados(itens) {
+            itens.forEach(item => {
+                if (!itensSorteaveis.some(it => it == item)) itensSorteaveis.push(item);
+            });
+        }
+
+        // Função de sorteio
+        function sortearItem() {
+            if (itensSorteaveis.length > 0) {
+                let randomIndex = Math.floor(Math.random() * itensSorteaveis.length);
+                let selectedItem;
+                do {
+                    randomIndex = Math.floor(Math.random() * itensSorteaveis.length);
+                    selectedItem = itensSorteaveis[randomIndex];
+                }
+                while (itensSorteados.some(it => it == selectedItem));
+                itensSorteados.push(selectedItem);
+                itensSorteaveis = itensSorteaveis.filter(it => it != selectedItem);
+
+                // Cria um novo log para o item sorteado
+                const logEntry = document.createElement('div');
+                logEntry.innerHTML = `<b>${selectedItem.name}</b><br /> <img src="${selectedItem.image}" class="item-image inline-block">`;
+                logEntry.className = 'log-item';
+
+                // Atualiza o log central
+                const logCentral = document.getElementById('log-central');
+                logCentral.prepend(logEntry);
+
+                // Verifica quem acertou e atualiza na tela
+                verificarAcertos(selectedItem);
+            }
+        }
+
+        function verificarAcertos(selectedItem) {
+            players.forEach(player => {
+                if (player.itens.find(it => it == selectedItem.id)) {
+                    player.acertos++;
+                    let imgToHighlight = document.querySelector(`img[data-id='${selectedItem.id}']`);
+                    imgToHighlight.classList.add('highlight-background');
+                }
+            });
+            updateRanking();
+
+            // Procura vencedor (após atualizar ranking, porque mais de um pode vencer ao mesmo tempo)
+            players.forEach(player => {
+                if (player.acertos == 6) {
+                    winnerList.push(player.username);
+                    //document.getElementById('sortear-btn').disabled = true;
+                }
+            });
+        }
+
+        // Função para atualizar o ranking
+        function updateRanking() {
+            players.sort((a, b) => b.acertos - a.acertos);
+            const rankingContainer = document.getElementById('ranking-container');
+            rankingContainer.innerHTML = ''; // Limpa o ranking atual
+            players.forEach(player => {
+                const rankingItem = document.createElement('div');
+                rankingItem.className = 'ranking-item';
+                rankingItem.textContent = `${player.username} - ${player.acertos} acertos`;
+                rankingContainer.appendChild(rankingItem);
+            });
+        }
+
+        // Função para buscar os dados da API e renderizar a lista de skins
+        async function fetchSkins() {
+            try {
+                const response = await fetch('https://valorant-api.com/v1/weapons/skins?language=pt-BR');
+                const data = await response.json();
+                const skins = data.data;  // Lista de skins
+
+                skins.forEach(skin => {
+                    // Verifica se o item tem displayIcon e displayName
+                    if (skin.displayIcon && skin.displayName && !skin.displayName.endsWith('Padrão') && !skin.displayName.endsWith('aleatória')) {
+                        let i = 1;
+                        let proposedName;
+                        do {
+                            proposedName = skin.displayName.substring(0, 3).toUpperCase() + '_' + i.toLocaleString('pt-BR', { minimumIntegerDigits: 3 });
+                            i++;
+                        } while (skinList.find(sk => sk.id == proposedName));
+                        const itemID = proposedName;
+                        skinList.push({ id: proposedName, name: skin.displayName, image: skin.displayIcon });
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao buscar as skins:', error);
+            }
+        }
+
+        // Chama a função de busca quando a página carregar
+        fetchSkins();
+
+        // Adiciona o evento ao botão
+        document.getElementById('sortear-btn').addEventListener('click', sortearItem);
+
+        playerList.innerHTML = ''; // Limpa a lista antes de renderizar
+    </script>
+</body>
+
+</html>
