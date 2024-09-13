@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuda - Como Jogar</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.8;
+            background-color: #f9fafb;
+            color: #333;
+            padding: 0 20px;
+            margin: 0;
+        }
+
+        header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #4a90e2;
+            border-bottom: 2px solid #4a90e2;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        code {
+            background-color: #f1f1f1;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 1.05em;
+            color: #d33;
+        }
+
+        a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        /* Botão "Voltar ao Topo" */
+        .back-to-top {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #4a90e2;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .back-to-top:hover {
+            background-color: #357ab8;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Bingo do Mercado Noturno - Como Jogar</h1>
+    </header>
+
+    <div class="container">
+        <!-- Seção 1: Como funciona o jogo -->
+        <div class="section">
+            <h2>Como funciona o jogo</h2>
+            <p>
+                O jogo é simples! Nós sorteamos aleatoriamente um item de uma lista de skins do Valorant. Cada jogador
+                tem 6
+                skins atribuídas a ele, e a cada sorteio, se a skin sorteada for uma das skins do jogador, ele marca um
+                ponto.
+            </p>
+            <p>
+                O primeiro jogador a atingir 6 pontos é declarado vencedor.
+            </p>
+        </div>
+
+        <!-- Seção 2: Como as pessoas participam do jogo -->
+        <div class="section">
+            <h2>Como participar do jogo</h2>
+            <p>
+                Para participar do jogo, os espectadores precisam digitar o comando
+                <code>!participar ID1, ID2, ID3,...</code> no chat da Twitch. No comando, os IDs correspondem às skins
+                do
+                Valorant que o jogador tiver no mercado noturno.
+            </p>
+            <p>
+                <b>Exemplo de uso:</b>
+                <br />
+            <h1><code>!participar ODI_002, ARE_005, ARE_020, VAN_002, BUL_011, BIO_001</code></h1>
+            </p>
+            <p>
+                <b>Observação:</b> Quando o primeiro item for sorteado, mais ninguém pode entrar no sorteio.
+            </p>
+            <p>
+                Quer recomeçar tudo? É só atualizar a página.
+            </p>
+        </div>
+
+        <!-- Seção 3: Onde consultar os IDs -->
+        <div class="section">
+            <h2>Onde consultar os IDs</h2>
+            <p>
+                Os IDs das skins podem ser consultados <a href="skins_valorant.html" target="_blank">AQUI</a>. Esta
+                página
+                contém uma lista com o nome de cada skin e seu respectivo ID.
+            </p>
+            <p>
+                É importante escolher os IDs corretamente, já que serão usados no sorteio.
+            </p>
+        </div>
+
+        <!-- Seção 4: Como detectar que alguém venceu -->
+        <div class="section">
+            <h2>Como saber se alguém venceu</h2>
+            <p>
+                Um jogador vence quando atinge 6 pontos (ou seja, teve todas as suas skins sorteadas).
+            </p>
+            <p>
+                O ranking em tempo real também reflete a pontuação dos jogadores durante o jogo, facilitando a
+                visualização
+                de quem está mais próximo da vitória.
+            </p>
+            <p>
+                Quando houver um vencedor, as suas mensagens passarão a se destacar no chat que está na lateral direita
+                do
+                jogo, evidenciando-o para detectar presença no chat.
+            </p>
+        </div>
+        <div class="section">
+            <h2>Entendeu tudo?</h2>
+            <a href="index.html">CLIQUE AQUI PARA JOGAR</a>
+        </div>
+    </div>
+
+</body>
+
+</html>
