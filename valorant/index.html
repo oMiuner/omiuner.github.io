@@ -346,8 +346,8 @@
             players.forEach(player => {
                 if (player.itens.find(it => it == selectedItem.id)) {
                     player.acertos++;
-                    let imgToHighlight = document.querySelector(`img[data-id='${selectedItem.id}']`);
-                    imgToHighlight.classList.add('highlight-background');
+                    let imgsToHighlight = document.querySelectorAll(`img[data-id='${selectedItem.id}']`);
+                    imgsToHighlight.forEach(img => img.classList.add('highlight-background'));
                 }
             });
             updateRanking();
