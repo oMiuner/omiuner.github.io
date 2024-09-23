@@ -188,8 +188,15 @@
 <body class="bg-gray-100 h-screen flex flex-col">
 
     <!-- Banner no topo da página -->
-    <div class="bg-blue-600 text-white text-center py-4 text-2xl font-bold">
-        BINGO DO MERCADO NOTURNO
+    <div class="bg-blue-600 text-white flex items-center py-4 px-6 text-2xl font-bold relative">
+        <!-- Campo para inserir o canal da Twitch -->
+        <div class="absolute left-6">
+            <label for="twitch-channel" class="text-white text-lg">Canal da Twitch:</label>
+            <input id="twitch-channel" type="text" class="px-2 py-1 rounded text-black" placeholder="Digite o canal" />
+            <button id="set-channel" class="bg-white text-blue-600 ml-2 px-4 py-1 rounded">Confirmar</button>
+        </div>
+        <!-- Centralização do título -->
+        <div class="mx-auto">BINGO DO MERCADO NOTURNO</div>
     </div>
 
     <button id="help-btn" class="help-btn">?</button>
@@ -243,22 +250,27 @@
         let itensSorteaveis = [];
         let itensSorteados = [];
         let winnerList = [];
+        let twitchChannel = "omiuner";
 
-        const client = new tmi.Client({
-            channels: ['tck10']
-        });
-        client.connect();
+        function initializeTMI() {
+            const client = new tmi.Client({
+                channels: [twitchChannel] // O canal da Twitch será monitorado aqui
+            });
 
-        client.on('message', (channel, tags, message, self) => {
-            // Ignore echoed messages.
-            if (self) return;
+            client.connect().catch(console.error);
+            console.log("Conectado ao canal:", twitchChannel);
 
-            updateChatLog(tags, message);
+            client.on('message', (channel, tags, message, self) => {
+                // Ignore echoed messages.
+                if (self) return;
 
-            if (message.toLowerCase().startsWith('!participar') && itensSorteados.length == 0) {
-                tryToAddPlayer(tags, message);
-            }
-        });
+                updateChatLog(tags, message);
+
+                if (message.toLowerCase().startsWith('!participar') && itensSorteados.length == 0) {
+                    tryToAddPlayer(tags, message);
+                }
+            });
+        }
 
         let players = [];
 
@@ -457,6 +469,16 @@
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 fecharModal();
+            }
+        });
+
+        // Atualizar o canal da Twitch com o valor inserido no campo de texto
+        document.getElementById('set-channel').addEventListener('click', () => {
+            const channelInput = document.getElementById('twitch-channel').value;
+            if (channelInput) {
+                twitchChannel = channelInput;
+                console.log("Novo canal da Twitch definido:", twitchChannel);
+                initializeTMI(); // Reinicializa o cliente com o novo canal
             }
         });
 
