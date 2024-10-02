@@ -330,28 +330,31 @@
                     let itensDoPlayer = [];
                     for (let i = 0; i < idList.length; i++) {
                         let id = idList[i].trim();
-                        itensDoPlayer.push(id);
+                        if (!itensDoPlayer.includes(id))
+                            itensDoPlayer.push(id);
                     }
-                    itensDoPlayer.forEach(item => {
-                        let completeItem = skinList.find(sk => sk.id == item);
-                        const img = document.createElement('img');
-                        img.src = completeItem.image;
-                        img.alt = completeItem.name;
-                        img.dataset.id = completeItem.id;
-                        img.dataset.player = completeItem.username;
-                        img.className = 'item-image mr-1';
-                        imagesDiv.appendChild(img);
-                    });
+                    if (itensDoPlayer.length == 6) {
+                        itensDoPlayer.forEach(item => {
+                            let completeItem = skinList.find(sk => sk.id == item);
+                            const img = document.createElement('img');
+                            img.src = completeItem.image;
+                            img.alt = completeItem.name;
+                            img.dataset.id = completeItem.id;
+                            img.dataset.player = completeItem.username;
+                            img.className = 'item-image mr-1';
+                            imagesDiv.appendChild(img);
+                        });
 
-                    listItem.appendChild(itemName);
-                    listItem.appendChild(imagesDiv);
+                        listItem.appendChild(itemName);
+                        listItem.appendChild(imagesDiv);
 
-                    playerList.appendChild(listItem);
-                    players.push({ username: tags.username, itens: itensDoPlayer, acertos: 0 });
-                    updateRanking();
-                    let adicionarItens = [];
-                    itensDoPlayer.forEach(item => adicionarItens.push(skinList.find(it => it.id == item)));
-                    adicionarItensParaSeremSorteados(adicionarItens);
+                        playerList.appendChild(listItem);
+                        players.push({ username: tags.username, itens: itensDoPlayer, acertos: 0 });
+                        updateRanking();
+                        let adicionarItens = [];
+                        itensDoPlayer.forEach(item => adicionarItens.push(skinList.find(it => it.id == item)));
+                        adicionarItensParaSeremSorteados(adicionarItens);
+                    }
                 }
             }
         }
