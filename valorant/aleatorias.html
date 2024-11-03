@@ -212,10 +212,14 @@
     <!-- Banner no topo da página -->
     <div class="bg-blue-600 text-white flex items-center py-4 px-6 text-2xl font-bold relative">
         <!-- Campo para inserir o canal da Twitch -->
-        <div class="absolute left-6">
+        <div class="flex items-center space-x-4">
             <label for="twitch-channel" class="text-white text-lg">Canal da Twitch:</label>
             <input id="twitch-channel" type="text" class="px-2 py-1 rounded text-black" placeholder="Digite o canal" />
             <button id="set-channel" class="set-channel">Confirmar</button>
+        </div>
+        <div class="flex items-center space-x-1 ml-4">
+            <input type="checkbox" id="toggle-feature" class="h-5 w-5" />
+            <label for="toggle-feature" class="text-white text-lg">Somente subs?</label>
         </div>
         <!-- Centralização do título -->
         <div class="mx-auto">BINGO DE SKINS DO VALORANT</div>
@@ -274,6 +278,7 @@
         let winnerList = [];
         let itemsForEachPlayer = 6;
         let twitchChannel = "omiuner";
+        let somenteSubs = false;
 
         function initializeTMI() {
             const client = new tmi.Client({
@@ -292,7 +297,7 @@
 
                 updateChatLog(tags, message);
 
-                if (message.toLowerCase().startsWith('!participar') && itensSorteados.length == 0) {
+                if (message.toLowerCase().startsWith('!participar') && itensSorteados.length == 0 && (!somenteSubs || somenteSubs && tags.subscriber)) {
                     tryToAddPlayer(tags, message);
                 }
             });
@@ -515,6 +520,11 @@
                 console.log("Novo canal da Twitch definido:", twitchChannel);
                 initializeTMI(); // Reinicializa o cliente com o novo canal
             }
+        });
+
+        // Listener para o checkbox
+        document.getElementById('toggle-feature').addEventListener('change', (event) => {
+            somenteSubs = event.target.checked;
         });
 
         playerList.innerHTML = ''; // Limpa a lista antes de renderizar
