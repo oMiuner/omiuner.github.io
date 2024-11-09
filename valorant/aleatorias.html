@@ -417,7 +417,7 @@
             // Procura vencedor (após atualizar ranking, porque mais de um pode vencer ao mesmo tempo)
             players.forEach(player => {
                 if (player.acertos == 6) {
-                    if (!winnerList.some(pl => pl.username == player.username)) {
+                    if (!winnerList.some(pl => pl == player.username)) {
                         winnerList.push(player.username);
 
                         // Exibe o modal com o nome do vencedor
