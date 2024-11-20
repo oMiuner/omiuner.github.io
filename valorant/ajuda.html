@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajuda - Como Jogar</title>
+    <title>Bingo do Valorant - Ajuda</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             line-height: 1.8;
             background-color: #f9fafb;
             color: #333;
-            padding: 0 20px;
             margin: 0;
+            padding: 0 20px;
         }
 
         header {
@@ -27,13 +27,46 @@
             font-size: 2.5em;
         }
 
+        .tabs {
+            display: flex;
+            justify-content: center;
+            background-color: #4a90e2;
+            border-bottom: 2px solid #357ab8;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 3px solid transparent;
+            transition: background-color 0.3s, border-bottom-color 0.3s;
+        }
+
+        .tab:hover {
+            background-color: #357ab8;
+        }
+
+        .tab.active {
+            border-bottom-color: white;
+        }
+
         .container {
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 20px auto;
             padding: 20px;
             background-color: white;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
         }
 
         h2 {
@@ -67,139 +100,90 @@
         a:hover {
             text-decoration: underline;
         }
-
-        .section {
-            margin-bottom: 40px;
-        }
-
-        /* Botão "Voltar ao Topo" */
-        .back-to-top {
-            display: inline-block;
-            margin-top: 20px;
-            background-color: #4a90e2;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        .back-to-top:hover {
-            background-color: #357ab8;
-        }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2em;
-            }
-
-            .container {
-                padding: 15px;
-            }
-
-            p {
-                font-size: 1em;
-            }
-        }
     </style>
 </head>
 
 <body>
     <header>
-        <h1>Bingo do Mercado Noturno - Como Jogar</h1>
+        <h1>Bingo do Valorant</h1>
     </header>
 
+    <div class="tabs">
+        <div class="tab active" data-tab="comeco">Comece aqui</div>
+        <div class="tab" data-tab="versao1">Versão 1 - Mercado Noturno</div>
+        <div class="tab" data-tab="versao2">Versão 2 - Skins Aleatórias (mais fácil)</div>
+        <div class="tab" data-tab="venceu">Quando alguém ganha?</div>
+        <div class="tab" data-tab="jogar">JOGAR</div>
+    </div>
+
     <div class="container">
-        <!-- Seção 1: Como funciona o jogo -->
-        <div class="section">
-            <h2>Como funciona o jogo</h2>
-            <p>
-                É um bingo.
-            </p>
-            <p>
-                Cada jogador tem 6 skins no mercado noturno.
-            </p>
-            <p>
-                O primeiro jogador a ter seus 6 itens sorteados, ganha.
-            </p>
-            <p>
-                O jogo só funciona enquanto o(a) streamer tiver a página aberta com seu canal registrado!
-            </p>
-            <p>
-                Quando o primeiro item for sorteado, mais ninguém pode entrar no sorteio.
-            </p>
-            <p>
-                <b>Quer recomeçar tudo? É só atualizar a página.</b>
-            </p>
+        <div id="comeco" class="content active">
+            <h2>O que é e como funciona?</h2>
+            <p><b>É um jogo para testar a sorte dos viewers da stream.</b></p>
+            <p>Cada jogador tem 6 skins.</p>
+            <p>O(A) streamer irá sortear skins.</p>
+            <p>O primeiro jogador a ter seus 6 itens sorteados, ganha.</p>
+            <p>O que o(a) vencedor(a) ganha? Depende do(a) streamer.</p>
+            <p>O jogo só funciona enquanto o(a) streamer tiver a página aberta com seu canal confirmado!</p>
+            <p>Quando o primeiro item for sorteado, mais ninguém pode entrar no sorteio.</p>
+            <p><b>Streamer: Quer recomeçar tudo? É só atualizar a página.</b></p>
         </div>
 
-        <!-- Seção 2a: Como as pessoas participam do jogo -->
-        <div class="section">
-            <h2>Como participar do jogo (Versão Skins Aleatórias)</h2>
-            <p>
-                Os viewers devem digitar o comando
-                <code>!participar</code> no chat da Twitch.
-            </p>
+        <div id="versao1" class="content">
+            <h2>Versão 1 - Mercado Noturno</h2>
+            <p>Os viewers devem digitar o comando <code>!participar ID1, ID2, ID3, ID4, ID5, ID6</code> no chat da
+                Twitch, trocando ID1 até ID6 pelos IDs das skins que o jogador tiver em seu Mercado Noturno.</p>
+            <p><b>Exemplo de uso:</b></p>
+            <p><code>!participar ODI_002, ARE_005, ARE_020, VAN_002, BUL_011, BIO_001</code></p>
+
+            <h2>Onde consultar os IDs</h2>
+            <p><a href="skins_valorant.html" target="_blank">AQUI</a>. Esta página contém uma lista com o nome de cada
+                skin e seu respectivo ID.</p>
+            <p><b>"E se o meu item não estiver na lista?"</b> É uma falha da API do Valorant! Nosso site usa a lista
+                oficial
+                deles. Recomendamos que escolha um outro item aleatório da lista nesses casos.</p>
         </div>
 
-        <!-- Seção 2b: Como as pessoas participam do jogo -->
-        <div class="section">
-            <h2>Como participar do jogo (Versão Mercado Noturno)</h2>
-            <p>
-                Os viewers devem digitar o comando
-                <code>!participar ID1, ID2, ID3, ID4, ID5, ID6</code> no chat da Twitch.
-            </p>
-            <p>
-                Cada ID representa uma skin. A próxima seção explica onde consultar os IDs.
-            </p>
-            <p>
-                <b>Exemplo de uso:</b>
-                <br />
-            <h1><code>!participar ODI_002, ARE_005, ARE_020, VAN_002, BUL_011, BIO_001</code></h1>
-            </p>
+        <div id="versao2" class="content">
+            <h2>Versão 2 - Skins Aleatórias</h2>
+            <p>Os viewers devem digitar o comando <code>!participar</code> no chat da Twitch. Apenas isso.</p>
+            <p><b>OBS: Primeiro o(a) streamer deve conectar sua Twitch no site!</b></p>
         </div>
 
-        <!-- Seção 3: Onde consultar os IDs -->
-        <div class="section">
-            <h2>Onde consultar os IDs (Versão Mercado Noturno)</h2>
-            <p>
-                <a href="skins_valorant.html" target="_blank">AQUI</a>. Esta
-                página contém uma lista com o nome de cada skin e seu respectivo ID.
-            </p>
-            <p>
-                <b>"E se o meu item não estiver na lista?"</b> Culpa da API do Valorant! Nosso site usa a lista oficial
-                deles. Recomendamos que escolha um outro item aleatório da lista nesses casos.
-            </p>
-        </div>
-
-        <!-- Seção 4: Como saber se alguém venceu -->
-        <div class="section">
+        <div id="venceu" class="content">
             <h2>Como saber se alguém venceu</h2>
-            <p>
-                Um jogador vence quando tiver todas as suas skins sorteadas.
-            </p>
-            <p>
-                O ranking em tempo real reflete a pontuação dos jogadores durante o jogo.
-            </p>
-            <p>
-                Quando houver um vencedor, as suas mensagens passarão a se destacar no chat que está na lateral direita
-                do jogo.
-            </p>
-            <p>
-                Caso ocorra um empate: Que o(a) streamer entre em um acordo com o chat, aí estão querendo demais também.
+            <p> Um jogador vence quando tiver todas as suas 6 skins sorteadas. </p>
+            <p> O ranking em tempo real reflete a pontuação dos jogadores durante o jogo. </p>
+            <p> Quando houver um vencedor, as suas mensagens passarão a se destacar no chat que está na lateral direita
+                do jogo. </p>
+            <p> Caso ocorra um empate: Que o(a) streamer entre em um acordo com o chat para decidir.
             </p>
         </div>
-        <div class="section">
-            <h2>Entendeu tudo, querido streamer?</h2>
-            <a href="index.html">CLIQUE AQUI PARA JOGAR VERSÃO MERCADO NOTURNO</a>
-            <br />
-            <a href="aleatorias.html">CLIQUE AQUI PARA JOGAR VERSÃO SKINS ALEATÓRIAS</a>
+
+        <div id="jogar" class="content">
+            <h2>Entendeu tudo?</h2>
+            <p><a href="index.html">CLIQUE AQUI PARA JOGAR A VERSÃO 1 (MERCADO NOTURNO)</a></p>
+            <p><a href="aleatorias.html">CLIQUE AQUI PARA JOGAR A VERSÃO 2 (SKINS ALEATÓRIAS)</a></p>
+
         </div>
     </div>
 
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+    </script>
 </body>
 
 </html>
