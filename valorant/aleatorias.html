@@ -391,24 +391,32 @@
                 itensSorteados.push(selectedItem);
                 itensSorteaveis = itensSorteaveis.filter(it => it != selectedItem);
 
+                // Verifica quem acertou e atualiza na tela
+                let playersQueAcertaram = verificarAcertos(selectedItem);
+                let textoPlayersQueAcertaram = "Quem pontuou: ";
+                playersQueAcertaram.forEach(p => {
+                    textoPlayersQueAcertaram += p + ", ";
+                });
+                textoPlayersQueAcertaram = textoPlayersQueAcertaram.substring(0, textoPlayersQueAcertaram.length-2);
+
                 // Cria um novo log para o item sorteado
                 const logEntry = document.createElement('div');
-                logEntry.innerHTML = `<b>${selectedItem.name}</b><br /> <img src="${selectedItem.image}" class="item-image inline-block">`;
+                logEntry.innerHTML = `<b>${selectedItem.name}</b><br /> <img src="${selectedItem.image}" class="item-image inline-block"><br /><b>${textoPlayersQueAcertaram}</b>`;
                 logEntry.className = 'log-item';
 
                 // Atualiza o log central
                 const logCentral = document.getElementById('log-central');
                 logCentral.prepend(logEntry);
-
-                // Verifica quem acertou e atualiza na tela
-                verificarAcertos(selectedItem);
             }
         }
 
         function verificarAcertos(selectedItem) {
+            let returnList = [];
+
             players.forEach(player => {
                 if (player.itens.find(it => it == selectedItem.id)) {
                     player.acertos++;
+                    returnList.push(player.username);
                     let imgsToHighlight = document.querySelectorAll(`img[data-id='${selectedItem.id}']`);
                     imgsToHighlight.forEach(img => img.classList.add('highlight-background'));
                 }
@@ -432,6 +440,8 @@
                     }
                 }
             });
+            
+            return returnList;
         }
 
         // Função para fechar o modal e o overlay
