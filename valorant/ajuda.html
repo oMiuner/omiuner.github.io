@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bingo do Valorant - Ajuda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,61 +17,71 @@
         }
 
         header {
-            background-color: #4a90e2;
-            color: white;
-            padding: 20px;
-            text-align: center;
+            background: linear-gradient(135deg, #4a90e2 0%, #357ab8 100%);
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         header h1 {
             margin: 0;
             font-size: 2.5em;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1px;
         }
 
         .tabs {
-            display: flex;
-            justify-content: center;
-            background-color: #4a90e2;
-            border-bottom: 2px solid #357ab8;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.5rem;
+            gap: 0.5rem;
         }
 
         .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-            border-bottom: 3px solid transparent;
-            transition: background-color 0.3s, border-bottom-color 0.3s;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
         }
 
         .tab:hover {
-            background-color: #357ab8;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
         }
 
         .tab.active {
-            border-bottom-color: white;
+            background-color: white;
+            color: #4a90e2;
+            border-bottom: none;
+            font-weight: bold;
         }
 
         .container {
             max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            margin: 40px auto;
+            padding: 30px;
             background-color: white;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
 
         .content {
-            display: none;
+            padding-bottom: 30px;
+            /* Espaçamento inferior para cada seção */
         }
 
-        .content.active {
-            display: block;
+        hr {
+            border: none;
+            border-top: 2px solid #4a90e2;
+            /* Estilo da divisória */
+            margin: 30px 0;
+            /* Espaçamento acima e abaixo da divisória */
         }
 
         h2 {
-            font-size: 1.8em;
+            font-size: 1.8em !important;
             color: #4a90e2;
             border-bottom: 2px solid #4a90e2;
             padding-bottom: 10px;
@@ -78,7 +89,7 @@
         }
 
         p {
-            margin-bottom: 20px;
+            margin-top: 20px !important;
             font-size: 1.1em;
             color: #555;
         }
@@ -91,14 +102,27 @@
             color: #d33;
         }
 
-        a {
-            color: #4a90e2;
-            text-decoration: none;
-            font-weight: bold;
+        .button {
+            background-color: #4a90e2;
+            color: white;
+            padding: 20px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.5em;
+            transition: background-color 0.3s ease;
         }
 
-        a:hover {
-            text-decoration: underline;
+        .button:hover {
+            background-color: #357ab8;
+        }
+
+        .play-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
         }
     </style>
 </head>
@@ -108,20 +132,12 @@
         <h1>Bingo do Valorant</h1>
     </header>
 
-    <div class="tabs">
-        <div class="tab active" data-tab="comeco">Comece aqui</div>
-        <div class="tab" data-tab="versao1">Versão 1 - Mercado Noturno</div>
-        <div class="tab" data-tab="versao2">Versão 2 - Skins Aleatórias (mais fácil)</div>
-        <div class="tab" data-tab="venceu">Quando alguém ganha?</div>
-        <div class="tab" data-tab="jogar">JOGAR</div>
-    </div>
-
     <div class="container">
-        <div id="comeco" class="content active">
+        <div class="content">
             <h2>O que é e como funciona?</h2>
             <p><b>É um jogo para testar a sorte dos viewers da stream.</b></p>
-            <p>Cada jogador tem 6 skins.</p>
-            <p>O(A) streamer irá sortear skins.</p>
+            <p>Cada jogador tem 6 skins definidas de forma aleatória.</p>
+            <p>O(A) streamer irá sortear skins aleatoriamente a partir de um botão.</p>
             <p>O primeiro jogador a ter seus 6 itens sorteados, ganha.</p>
             <p>O que o(a) vencedor(a) ganha? Depende do(a) streamer.</p>
             <p>O jogo só funciona enquanto o(a) streamer tiver a página aberta com seu canal confirmado!</p>
@@ -129,59 +145,36 @@
             <p><b>Streamer: Quer recomeçar tudo? É só atualizar a página.</b></p>
         </div>
 
-        <div id="versao1" class="content">
-            <h2>Versão 1 - Mercado Noturno</h2>
-            <p>Os viewers devem digitar o comando <code>!participar ID1, ID2, ID3, ID4, ID5, ID6</code> no chat da
-                Twitch, trocando ID1 até ID6 pelos IDs das skins que o jogador tiver em seu Mercado Noturno.</p>
-            <p><b>Exemplo de uso:</b></p>
-            <p><code>!participar ODI_002, ARE_005, ARE_020, VAN_002, BUL_011, BIO_001</code></p>
+        <hr> <!-- Divisória -->
 
-            <h2>Onde consultar os IDs</h2>
-            <p><a href="skins_valorant.html" target="_blank">AQUI</a>. Esta página contém uma lista com o nome de cada
-                skin e seu respectivo ID.</p>
-            <p><b>"E se o meu item não estiver na lista?"</b> É uma falha da API do Valorant! Nosso site usa a lista
-                oficial
-                deles. Recomendamos que escolha um outro item aleatório da lista nesses casos.</p>
-        </div>
-
-        <div id="versao2" class="content">
-            <h2>Versão 2 - Skins Aleatórias</h2>
+        <div class="content">
+            <h2>Como o chat participa?</h2>
             <p>Os viewers devem digitar o comando <code>!participar</code> no chat da Twitch. Apenas isso.</p>
-            <p><b>OBS: Primeiro o(a) streamer deve conectar sua Twitch no site!</b></p>
+            <p><b>OBS: Primeiro o(a) streamer deve definir se apenas subs participam e informar seu canal da Twitch no
+                    site!</b></p>
         </div>
 
-        <div id="venceu" class="content">
+        <hr> <!-- Divisória -->
+
+        <div class="content">
             <h2>Como saber se alguém venceu</h2>
             <p> Um jogador vence quando tiver todas as suas 6 skins sorteadas. </p>
             <p> O ranking em tempo real reflete a pontuação dos jogadores durante o jogo. </p>
             <p> Quando houver um vencedor, as suas mensagens passarão a se destacar no chat que está na lateral direita
-                do jogo. </p>
+                do jogo, <span class="bg-yellow-400">desta forma</span>. </p>
             <p> Caso ocorra um empate: Que o(a) streamer entre em um acordo com o chat para decidir.
             </p>
         </div>
 
-        <div id="jogar" class="content">
-            <h2>Entendeu tudo?</h2>
-            <p><a href="index.html">CLIQUE AQUI PARA JOGAR A VERSÃO 1 (MERCADO NOTURNO)</a></p>
-            <p><a href="aleatorias.html">CLIQUE AQUI PARA JOGAR A VERSÃO 2 (SKINS ALEATÓRIAS)</a></p>
-
-        </div>
+        <hr> <!-- Divisória -->
     </div>
 
+    <div class="play-button">
+        <button class="button" id="jogar-btn">JOGAR</button>
+    </div>
     <script>
-        const tabs = document.querySelectorAll('.tab');
-        const contents = document.querySelectorAll('.content');
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs and contents
-                tabs.forEach(t => t.classList.remove('active'));
-                contents.forEach(c => c.classList.remove('active'));
-
-                // Add active class to clicked tab and corresponding content
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.tab).classList.add('active');
-            });
+        document.getElementById('jogar-btn').addEventListener('click', function () {
+            window.open('index.html', '_self'); // Redireciona para a página index.html
         });
     </script>
 </body>
