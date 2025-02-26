@@ -8,9 +8,143 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="./tmi.min.js"></script>
     <style>
+        /* Importando fontes modernas do Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+    
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #e9ecef;
+            color: #343a40;
+        }
+    
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+    
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+    
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+    
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+    
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+    
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+    
+        .button {
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+    
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+    
+        .button:active {
+            transform: translateY(0);
+        }
+    
+        .result {
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+    
+        /* Estilo para o select */
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 2px solid #e1e1e1;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+    
+        select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+    
+        /* Animação para os resultados */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+    
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    
+        .result {
+            animation: fadeIn 0.3s ease-out;
+        }
+    
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+    
+            h1 {
+                font-size: 2rem;
+            }
+    
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    
         .ranking-container {
-            background-color: #edf2f7;
-            border: 2px solid #e2e8f0;
+            background-color: #f1f3f5;
+            border: 2px solid #dee2e6;
             border-radius: 5px;
             padding: 10px;
             text-align: center;
@@ -19,12 +153,12 @@
             color: black;
             overflow-y: auto;
         }
-
+    
         .ranking-item {
             padding: 8px;
             border-bottom: 1px solid #ddd;
         }
-
+    
         /* Define um tamanho fixo para as imagens da lista */
         .item-image {
             width: 150px;
@@ -32,25 +166,23 @@
             object-fit: contain;
             position: relative;
             z-index: 0;
-            /* Coloca a imagem acima do background */
         }
-
+    
         /* Adiciona uma borda para visualizar melhor o efeito */
         .item-image.highlight-background {
-            border: 5px solid green;
+            border: 5px solid #28a745;
         }
-
+    
         /* Define o container principal com display flex e orientação de coluna */
         .main-container {
             display: flex;
             flex-direction: column;
             height: 100vh;
-            /* 100% da altura da tela */
         }
-
+    
         /* Botão fixo que ocupa 10% da altura da tela */
         .fixed-button {
-            background-color: #4a90e2;
+            background-color: #ff4757;
             color: white;
             padding: 10px 20px;
             border-radius: 5px;
@@ -60,7 +192,7 @@
             font-size: 1.5rem;
             margin-bottom: 10px;
         }
-
+    
         /* Log central que ocupa 90% da altura da tela e permite rolagem */
         .log-container {
             background-color: #f8fafc;
@@ -70,7 +202,7 @@
             height: 90vh;
             overflow-y: auto;
         }
-
+    
         /* Estilo para cada item no log */
         .log-item {
             padding: 10px;
@@ -78,29 +210,24 @@
             border-bottom: 1px solid #ddd;
             margin-bottom: 5px;
         }
-
+    
         /* Classe para adicionar um background à imagem */
         .highlight-background {
             position: relative;
-            /* Necessário para posicionar o background */
         }
-
+    
         .highlight-background::before {
             content: '';
-            /* Adiciona um pseudo-elemento */
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 255, 0, 0.5);
-            /* Cor verde semitransparente */
+            background-color: rgba(40, 167, 69, 0.5);
             z-index: 1;
-            /* Coloca o background atrás do conteúdo da imagem */
             pointer-events: none;
-            /* Permite clicar na imagem normalmente */
         }
-
+    
         .help-btn {
             position: fixed;
             top: 10px;
@@ -116,11 +243,11 @@
             line-height: 40px;
             transition: background-color 0.3s;
         }
-
+    
         .help-btn:hover {
             background-color: #e0e0e0;
         }
-
+    
         /* Modal de vitória */
         .modal {
             display: none;
@@ -136,16 +263,16 @@
             text-align: center;
             width: 300px;
         }
-
+    
         .modal h2 {
             font-size: 2em;
             margin: 0 0 20px;
         }
-
+    
         .modal p {
             font-size: 1.3em;
         }
-
+    
         /* Fundo escurecido */
         .overlay {
             display: none;
@@ -157,13 +284,13 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
-
+    
         /* Mostrar o modal */
         .modal.show,
         .overlay.show {
             display: block;
         }
-
+    
         /* Botão de fechar o modal */
         .close-btn {
             background-color: #4a90e2;
@@ -175,11 +302,11 @@
             font-size: 1.2rem;
             margin-top: 20px;
         }
-
+    
         .close-btn:hover {
             background-color: #357ab8;
         }
-
+    
         .set-channel {
             background-color: white;
             color: #4a90e2;
@@ -190,7 +317,7 @@
             font-size: 1.5rem;
             margin-bottom: 10px;
         }
-
+    
         .set-channel:disabled {
             background-color: #4ae28e;
             color: white;
@@ -200,10 +327,6 @@
             cursor: auto;
             font-size: 1.5rem;
             margin-bottom: 10px;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
         }
     </style>
 </head>
@@ -216,7 +339,7 @@
         <div class="flex items-center space-x-4">
             <label for="twitch-channel" class="text-white text-lg">Canal da Twitch:</label>
             <input id="twitch-channel" type="text" class="px-2 py-1 rounded text-black" placeholder="Digite o canal" />
-            <button id="set-channel" class="set-channel">Confirmar</button>
+            <button id="set-channel" class="button">Confirmar</button>
         </div>
         <div class="flex items-center space-x-1 ml-4">
             <input type="checkbox" id="toggle-feature" class="h-5 w-5" />
@@ -245,7 +368,7 @@
             </div>
 
             <!-- Botão de sortear ocupando 10% da tela -->
-            <button id="sortear-btn" class="fixed-button h-[10vh]">Sortear novo item</button>
+            <button id="sortear-btn" class="button fixed-button h-[10vh]">Sortear novo item</button>
 
             <!-- Log central ocupando 60% da tela -->
             <div id="log-central" class="log-container h-[60vh] mt-6">
@@ -325,7 +448,7 @@
             if (!players.find(p => p.username.toLowerCase() == tags.username.toLowerCase())) {
                 let idList = [];
                 while (idList.length < itemsForEachPlayer) {
-                    let newItem = skinList[Math.floor(Math.random()*skinList.length)];
+                    let newItem = skinList[Math.floor(Math.random() * skinList.length)];
                     if (!idList.includes(newItem.id)) {
                         idList.push(newItem.id);
                     }
@@ -355,11 +478,13 @@
                             img.dataset.id = completeItem.id;
                             img.dataset.player = completeItem.username;
                             img.className = 'item-image mr-1';
+                            img.title = completeItem.name;
                             imagesDiv.appendChild(img);
                         });
 
                         listItem.appendChild(itemName);
                         listItem.appendChild(imagesDiv);
+                        listItem.style.borderBottom = '1px solid #ddd';
 
                         playerList.appendChild(listItem);
                         players.push({ username: tags.username, itens: itensDoPlayer, acertos: 0 });
@@ -397,7 +522,7 @@
                 playersQueAcertaram.forEach(p => {
                     textoPlayersQueAcertaram += p + ", ";
                 });
-                textoPlayersQueAcertaram = textoPlayersQueAcertaram.substring(0, textoPlayersQueAcertaram.length-2);
+                textoPlayersQueAcertaram = textoPlayersQueAcertaram.substring(0, textoPlayersQueAcertaram.length - 2);
 
                 // Cria um novo log para o item sorteado
                 const logEntry = document.createElement('div');
@@ -440,7 +565,7 @@
                     }
                 }
             });
-            
+
             return returnList;
         }
 
