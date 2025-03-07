@@ -1,41 +1,89 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Mensagens Aleatórias</title>
+    <title>Mensagens Aleatórias</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <textarea id="messageInput" placeholder="Digite sua mensagem"></textarea>
-    <button onclick="sendMessage()">Enviar</button>
-    <button onclick="getRandomMessage()">Sortear Mensagem</button>
-    <p id="randomMessage"></p>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-2xl shadow-lg w-96 text-center">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Mensagens Aleatórias</h1>
+
+        <input id="messageInput" type="text" placeholder="Digite sua mensagem"
+            class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 mb-4">
+
+        <button onclick="sendMessage()"
+            class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition">
+            Enviar Mensagem
+        </button>
+
+        <button onclick="getRandomMessage()"
+            class="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-md mt-2 hover:bg-green-600 transition">
+            Obter Mensagem Aleatória
+        </button>
+
+        <!-- Área onde a mensagem será exibida -->
+        <div id="responseContainer" class="mt-4 text-gray-700 font-medium flex items-center justify-center h-10">
+            <p id="responseMessage"></p>
+            <div id="loadingSpinner" class="hidden animate-spin border-4 border-gray-300 border-t-blue-500 rounded-full w-6 h-6 ml-2"></div>
+        </div>
+    </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxXv0bNJQIGvY9Ovu2i5WPneXT2FuG92bEz_vjofto1_lsv4EDRQsTJJJBaE7l6q-w0WQ/exec"; // Substitua pela URL gerada no Apps Script
+        const apiUrl = "https://script.google.com/macros/s/AKfycbxXv0bNJQIGvY9Ovu2i5WPneXT2FuG92bEz_vjofto1_lsv4EDRQsTJJJBaE7l6q-w0WQ/exec";
 
         async function sendMessage() {
             const message = document.getElementById("messageInput").value;
-            if (!message) {
-                alert("Digite uma mensagem!");
-                return;
+            if (!message.trim()) return;
+
+            showLoading(true);
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mensagem: message })
+                });
+                document.getElementById("responseMessage").textContent = "Mensagem enviada com sucesso!";
+                document.getElementById("messageInput").value = "";
+            } catch (error) {
+                console.log(error);
+                document.getElementById("responseMessage").textContent = "Erro de conexão.";
             }
 
-            await fetch(API_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json"},
-                body: JSON.stringify({ mensagem: message })
-            });
-
-            document.getElementById("messageInput").value = "";
+            showLoading(false);
         }
 
         async function getRandomMessage() {
-            const response = await fetch(API_URL);
-            const data = await response.json();
-            document.getElementById("randomMessage").innerText = data.mensagem;
+            showLoading(true);
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                document.getElementById("responseMessage").textContent = data.mensagem || "Nenhuma mensagem disponível.";
+            } catch (error) {
+                document.getElementById("responseMessage").textContent = "Erro ao obter mensagem.";
+            }
+
+            showLoading(false);
+        }
+
+        function showLoading(isLoading) {
+            const spinner = document.getElementById("loadingSpinner");
+            const message = document.getElementById("responseMessage");
+
+            if (isLoading) {
+                spinner.classList.remove("hidden");
+                message.textContent = ""; // Limpa a mensagem enquanto carrega
+            } else {
+                spinner.classList.add("hidden");
+            }
         }
     </script>
+
 </body>
 </html>
