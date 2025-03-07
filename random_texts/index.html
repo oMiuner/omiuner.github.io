@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Mensagens Aleatórias</title>
+</head>
+<body>
+    <textarea id="messageInput" placeholder="Digite sua mensagem"></textarea>
+    <button onclick="sendMessage()">Enviar</button>
+    <button onclick="getRandomMessage()">Sortear Mensagem</button>
+    <p id="randomMessage"></p>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbxSGZ2ldJctyTU7Yl78yLHxADb7G433dH2RNrAC2PiUDODO5xq-AOkSAA0Y-xEVBPC_Bw/exec"; // Substitua pela URL gerada no Apps Script
+
+        async function sendMessage() {
+            const message = document.getElementById("messageInput").value;
+            if (!message) {
+                alert("Digite uma mensagem!");
+                return;
+            }
+
+            await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ mensagem: message })
+            });
+
+            document.getElementById("messageInput").value = "";
+            alert("Mensagem salva!");
+        }
+
+        async function getRandomMessage() {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            document.getElementById("randomMessage").innerText = data.mensagem;
+        }
+    </script>
+</body>
+</html>
