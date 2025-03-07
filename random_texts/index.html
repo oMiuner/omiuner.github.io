@@ -12,7 +12,7 @@
     <p id="randomMessage"></p>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbwsShp4v9e2PCSPpVWxOmQfKmKKTcAf2DKLkVHjqVig5RyxiFSq5Ki8zf5HZ5BjlTXLVg/exec"; // Substitua pela URL gerada no Apps Script
+        const API_URL = "https://script.google.com/macros/s/AKfycbxXv0bNJQIGvY9Ovu2i5WPneXT2FuG92bEz_vjofto1_lsv4EDRQsTJJJBaE7l6q-w0WQ/exec"; // Substitua pela URL gerada no Apps Script
 
         async function sendMessage() {
             const message = document.getElementById("messageInput").value;
@@ -23,12 +23,12 @@
 
             await fetch(API_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ mensagem: message })
             });
 
             document.getElementById("messageInput").value = "";
-            alert("Mensagem salva!");
         }
 
         async function getRandomMessage() {
