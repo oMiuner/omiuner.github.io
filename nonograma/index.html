@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nonograma</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .game-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-gap: 2px;
+            user-select: none;
+            /* Impede seleção de texto ao arrastar */
+        }
+
+        .grid {
+            display: grid;
+            border: 2px solid black;
+        }
+
+        .cell {
+            width: 30px;
+            height: 30px;
+            border: 1px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .filled {
+            background-color: black;
+        }
+
+        .marked {
+            color: red;
+            font-weight: bold;
+        }
+
+        .hint-row,
+        .hint-col {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 2px;
+        }
+
+        .victory-message {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Jogo Nonograma</h1>
+    <label for="gridSize">Tamanho da Grid:</label>
+    <input type="number" id="gridSize" min="5" max="15" value="5">
+    <button onclick="generateNonogram()">Gerar Nonograma</button>
+    <button onclick="clearGrid()">Limpar Grid</button>
+    <div class="game-container" id="game"></div>
+    <div class="victory-message" id="victoryMessage"></div>
+
+    <script>
+        let isMouseDown = false;
+        let solution = []; // Armazena as células que devem ser preenchidas corretamente
+        let gridContainer = null; // Variável para armazenar o container da grid
+
+        function generateHints(grid, size) {
+            let rowHints = [];
+            let colHints = Array.from({ length: size }, () => []);
+
+            for (let i = 0; i < size; i++) {
+                let row = grid[i];
+                let rowHint = [];
+                let count = 0;
+                for (let j = 0; j < size; j++) {
+                    if (row[j] === 1) {
+                        count++;
+                    } else if (count > 0) {
+                        rowHint.push(count);
+                        count = 0;
+                    }
+                    if (grid[j][i] === 1) {
+                        colHints[i].push(1);
+                    } else {
+                        colHints[i].push(0);
+                    }
+                }
+                if (count > 0) rowHint.push(count);
+                rowHints.push(rowHint.length > 0 ? rowHint : [0]);
+            }
+
+            colHints = colHints.map(col => {
+                let hints = [];
+                let count = 0;
+                for (let num of col) {
+                    if (num === 1) {
+                        count++;
+                    } else if (count > 0) {
+                        hints.push(count);
+                        count = 0;
+                    }
+                }
+                if (count > 0) hints.push(count);
+                return hints.length > 0 ? hints : [0];
+            });
+            return { rowHints, colHints };
+        }
+
+        function generateNonogram() {
+            let firstState = null;
+            const size = parseInt(document.getElementById("gridSize").value);
+            const gameDiv = document.getElementById("game");
+            const victoryMessage = document.getElementById("victoryMessage");
+            gameDiv.innerHTML = "";
+            victoryMessage.innerHTML = "";
+
+            const grid = Array.from({ length: size }, () =>
+                Array.from({ length: size }, () => Math.random() > 0.5 ? 1 : 0));
+
+            // Armazena a solução correta (células que devem ser preenchidas)
+            solution = grid.map(row => row.map(cell => cell === 1));
+
+            const { rowHints, colHints } = generateHints(grid, size);
+
+            gridContainer = document.createElement("div");
+            gridContainer.className = "grid-container";
+            gridContainer.style.display = "grid";
+            gridContainer.style.gridTemplateColumns = `auto repeat(${size}, 30px)`;
+
+            for (let i = 0; i < size + 1; i++) {
+                for (let j = 0; j < size + 1; j++) {
+                    const cell = document.createElement("div");
+                    if (i === 0 && j === 0) {
+                        cell.textContent = "";
+                    } else if (i === 0) {
+                        cell.className = "hint-col";
+                        cell.textContent = colHints[j - 1].join(" ");
+                    } else if (j === 0) {
+                        cell.className = "hint-row";
+                        cell.textContent = rowHints[i - 1].join(" ");
+                    } else {
+                        cell.className = "cell";
+                        cell.dataset.state = "empty";
+                        cell.dataset.row = i - 1;  // Armazena a linha
+                        cell.dataset.col = j - 1;  // Armazena a coluna
+
+                        // Adiciona o evento para detectar quando o mouse é pressionado
+                        cell.addEventListener("mousedown", (event) => {
+                            isMouseDown = true;
+                            toggleCellState(cell);
+                        });
+
+                        // Detecta quando o mouse entra na célula e o botão do mouse está pressionado
+                        cell.addEventListener("mouseenter", (event) => {
+                            if (isMouseDown) {
+                                if (!firstState) {
+                                    firstState = toggleCellState(cell);
+                                }
+                                else {
+                                    toggleCellStateToX(cell, firstState);
+                                }
+                            }
+                        });
+
+                        // Quando o mouse é solto, interrompe o arrasto
+                        cell.addEventListener("mouseup", () => {
+                            isMouseDown = false;
+                            firstState = null;
+                            checkVictory();
+                        });
+                    }
+                    gridContainer.appendChild(cell);
+                }
+            }
+            gameDiv.appendChild(gridContainer);
+        }
+
+        function toggleCellState(cell) {
+            if (cell.dataset.state === "empty") {
+                cell.classList.add("filled");
+                cell.dataset.state = "filled";
+            } else if (cell.dataset.state === "filled") {
+                cell.classList.remove("filled");
+                cell.classList.add("marked");
+                cell.textContent = "X";
+                cell.dataset.state = "marked";
+            } else {
+                cell.classList.remove("marked");
+                cell.textContent = "";
+                cell.dataset.state = "empty";
+            }
+            return cell.dataset.state;
+        }
+
+        function toggleCellStateToX(cell, state) {
+            if (cell.dataset.state === "empty" && state === "filled") {
+                cell.classList.add("filled");
+                cell.dataset.state = "filled";
+            } else if (cell.dataset.state === "filled" && state === "marked") {
+                cell.classList.remove("filled");
+                cell.classList.add("marked");
+                cell.textContent = "X";
+                cell.dataset.state = "marked";
+            } else if (state === "empty") {
+                cell.classList.remove("marked");
+                cell.textContent = "";
+                cell.dataset.state = "empty";
+            }
+        }
+
+        function checkVictory() {
+            let victory = true;
+            const cells = document.querySelectorAll(".cell");
+
+            cells.forEach(cell => {
+                const row = parseInt(cell.dataset.row);
+                const col = parseInt(cell.dataset.col);
+                const isCorrectlyFilled = solution[row][col] === (cell.dataset.state === "filled");
+
+                if (!isCorrectlyFilled) {
+                    victory = false;
+                }
+            });
+
+            if (victory) {
+                document.getElementById("victoryMessage").textContent = "Parabéns, você venceu!";
+            }
+        }
+
+        // Função para limpar a grid e remover a mensagem de vitória
+        function clearGrid() {
+            const cells = document.querySelectorAll(".cell");
+            cells.forEach(cell => {
+                cell.classList.remove("filled", "marked");
+                cell.textContent = "";
+                cell.dataset.state = "empty";
+            });
+            document.getElementById("victoryMessage").innerHTML = "";
+        }
+    </script>
+</body>
+
+</html>
