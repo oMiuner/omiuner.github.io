@@ -661,9 +661,9 @@
                 drawButton.textContent = 'Sortear novo item';
             } catch (error) {
                 skinsLoaded = false;
-                drawButton.disabled = true;
-                drawButton.textContent = 'Skins indisponíveis';
-                console.error('Erro ao buscar as skins. Recarregue a página para tentar novamente:', error);
+                drawButton.disabled = false;
+                drawButton.textContent = 'Tentar carregar skins novamente';
+                console.error('Erro ao buscar as skins. Clique no botão para tentar novamente:', error);
             }
         }
 
@@ -671,7 +671,13 @@
         fetchSkins();
 
         // Adiciona o evento aos botões
-        document.getElementById('sortear-btn').addEventListener('click', sortearItem);
+        document.getElementById('sortear-btn').addEventListener('click', () => {
+            if (!skinsLoaded) {
+                fetchSkins();
+                return;
+            }
+            sortearItem();
+        });
         document.getElementById('help-btn').addEventListener('click', function () {
             window.open('ajuda.html', '_blank'); // Redireciona para a página ajuda.html
         });
