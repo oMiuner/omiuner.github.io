@@ -1,182 +1,64 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bingo do Valorant - Ajuda</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="theme-color" content="#0b1020">
+    <title>Ajuda | Bingo do Valorant</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.8;
-            background-color: #f9fafb;
-            color: #333;
-            margin: 0;
-            padding: 0 20px;
-        }
-
-        header {
-            background: linear-gradient(135deg, #4a90e2 0%, #357ab8 100%);
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            letter-spacing: 1px;
-        }
-
-        .tabs {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 0.5rem;
-            gap: 0.5rem;
-        }
-
-        .tab {
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            padding: 0.75rem 1.5rem;
-        }
-
-        .tab:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-1px);
-        }
-
-        .tab.active {
-            background-color: white;
-            color: #4a90e2;
-            border-bottom: none;
-            font-weight: bold;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 30px;
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .content {
-            padding-bottom: 30px;
-            /* Espaçamento inferior para cada seção */
-        }
-
-        hr {
-            border: none;
-            border-top: 2px solid #4a90e2;
-            /* Estilo da divisória */
-            margin: 30px 0;
-            /* Espaçamento acima e abaixo da divisória */
-        }
-
-        h2 {
-            font-size: 1.8em !important;
-            color: #4a90e2;
-            border-bottom: 2px solid #4a90e2;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        p {
-            margin-top: 20px !important;
-            font-size: 1.1em;
-            color: #555;
-        }
-
-        code {
-            background-color: #f1f1f1;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 1.05em;
-            color: #d33;
-        }
-
-        .button {
-            background-color: #4a90e2;
-            color: white;
-            padding: 20px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.5em;
-            transition: background-color 0.3s ease;
-        }
-
-        .button:hover {
-            background-color: #357ab8;
-        }
-
-        .play-button {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-        }
+        :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        * { box-sizing: border-box; }
+        body { min-height: 100vh; margin: 0; color: #e5eaf5; background: radial-gradient(ellipse at 12% 0%, rgba(99, 102, 241, .2), transparent 40%), #0b1020; }
+        main { width: min(760px, 100%); margin: 0 auto; padding: 30px clamp(18px, 5vw, 42px) 42px; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: #a5b4fc; font-size: .76rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+        .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #818cf8; box-shadow: 0 0 14px #818cf8; }
+        h1 { margin: 12px 0 8px; color: #f8fafc; font-size: clamp(1.8rem, 5vw, 2.6rem); letter-spacing: -.045em; line-height: 1.1; }
+        .intro { margin: 0 0 26px; color: #a9b5ca; font-size: 1rem; line-height: 1.65; }
+        .steps { display: grid; gap: 12px; }
+        article { position: relative; padding: 19px 20px 18px 68px; border: 1px solid rgba(148, 163, 184, .16); border-radius: 16px; background: linear-gradient(135deg, rgba(30, 41, 59, .86), rgba(15, 23, 42, .82)); box-shadow: 0 10px 25px rgba(0, 0, 0, .14); }
+        .number { position: absolute; top: 18px; left: 19px; display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgba(129, 140, 248, .35); border-radius: 11px; color: #c7d2fe; background: rgba(99, 102, 241, .14); font-size: .85rem; font-weight: 800; }
+        h2 { margin: 1px 0 7px; color: #f1f5f9; font-size: 1.03rem; letter-spacing: -.01em; }
+        p { margin: 0; color: #aebbd0; font-size: .92rem; line-height: 1.65; }
+        code { display: inline-block; padding: 2px 8px; border: 1px solid rgba(129, 140, 248, .25); border-radius: 7px; color: #c7d2fe; background: rgba(99, 102, 241, .13); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .9em; }
+        .note { margin-top: 16px; padding: 15px 17px; border: 1px solid rgba(56, 189, 248, .2); border-radius: 14px; color: #bae6fd; background: rgba(14, 116, 144, .12); font-size: .88rem; line-height: 1.6; }
+        @media (max-width: 520px) { main { padding-top: 24px; } article { padding: 17px 16px 17px 58px; } .number { left: 14px; top: 16px; } }
     </style>
 </head>
-
 <body>
-    <header>
-        <h1>Bingo do Valorant</h1>
-    </header>
+    <main>
+        <span class="eyebrow">Guia rápido</span>
+        <h1>Como funciona o Bingo do Valorant</h1>
+        <p class="intro">Um sorteio de skins para a comunidade acompanhar durante a live. Siga estes passos para começar e conduzir a partida.</p>
 
-    <div class="container">
-        <div class="content">
-            <h2>O que é e como funciona?</h2>
-            <p><b>É um jogo para testar a sorte dos viewers da stream.</b></p>
-            <p>Cada jogador tem 6 skins definidas de forma aleatória.</p>
-            <p>O(A) streamer irá sortear skins aleatoriamente a partir de um botão.</p>
-            <p>O primeiro jogador a ter seus 6 itens sorteados, ganha.</p>
-            <p>O que o(a) vencedor(a) ganha? Depende do(a) streamer.</p>
-            <p>O jogo só funciona enquanto o(a) streamer tiver a página aberta com seu canal confirmado!</p>
-            <p>Quando o primeiro item for sorteado, mais ninguém pode entrar no sorteio.</p>
-            <p><b>Streamer: Quer recomeçar tudo? É só atualizar a página.</b></p>
+        <div class="steps">
+            <article>
+                <span class="number">01</span>
+                <h2>Conecte o canal</h2>
+                <p>Digite o nome do canal da Twitch e clique em <strong>Conectar</strong>. A página precisa permanecer aberta e conectada durante o jogo.</p>
+            </article>
+            <article>
+                <span class="number">02</span>
+                <h2>Receba os participantes</h2>
+                <p>Os viewers entram digitando <code>!participar</code> no chat. Se necessário, marque <strong>Somente subs?</strong> antes de iniciar.</p>
+            </article>
+            <article>
+                <span class="number">03</span>
+                <h2>Sorteie as skins</h2>
+                <p>Cada participante recebe seis skins aleatórias. Clique em <strong>Sortear novo item</strong> para revelar os itens um a um. Após o primeiro sorteio, novas entradas são fechadas.</p>
+            </article>
+            <article>
+                <span class="number">04</span>
+                <h2>Confirme a presença</h2>
+                <p>Quem completar as seis skins é selecionado como vencedor. O jogo aguarda uma mensagem dessa pessoa no chat por 10 segundos e registra os eventos no painel de logs.</p>
+            </article>
+            <article>
+                <span class="number">05</span>
+                <h2>Continue ou reinicie</h2>
+                <p>Depois de confirmar o vencedor, você pode continuar o sorteio para encontrar mais vencedores. Se a pessoa não responder, use a opção de remoção para retomar. Atualize a página para começar uma nova partida.</p>
+            </article>
         </div>
 
-        <hr> <!-- Divisória -->
-
-        <div class="content">
-            <h2>Como o chat participa?</h2>
-            <p>Os viewers devem digitar o comando <code>!participar</code> no chat da Twitch. Apenas isso.</p>
-            <p><b>OBS: Primeiro o(a) streamer deve definir se apenas subs participam e informar seu canal da Twitch no
-                    site!</b></p>
-        </div>
-
-        <hr> <!-- Divisória -->
-
-        <div class="content">
-            <h2>Como saber se alguém venceu</h2>
-            <p> Um jogador vence quando tiver todas as suas 6 skins sorteadas. </p>
-            <p> O ranking em tempo real reflete a pontuação dos jogadores durante o jogo. </p>
-            <p> Quando houver um vencedor, as suas mensagens passarão a se destacar no chat que está na lateral direita
-                do jogo, <span class="bg-yellow-400">desta forma</span>. </p>
-            <p> Caso ocorra um empate: Que o(a) streamer entre em um acordo com o chat para decidir.
-            </p>
-        </div>
-
-        <hr> <!-- Divisória -->
-    </div>
-
-    <div class="play-button">
-        <button class="button" id="jogar-btn">JOGAR</button>
-    </div>
-    <script>
-        document.getElementById('jogar-btn').addEventListener('click', function () {
-            window.open('index.html', '_self'); // Redireciona para a página index.html
-        });
-    </script>
+        <aside class="note">A recompensa e os critérios do sorteio ficam a cargo do streamer. Combine as regras com o chat antes de começar.</aside>
+    </main>
 </body>
-
 </html>
