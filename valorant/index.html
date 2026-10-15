@@ -389,7 +389,7 @@
         <div class="modal" id="modal-vencedor">
             <h2 class="text-2xl font-bold">Temos um vencedor!</h2>
             <p id="vencedor-nome" class="text-lg mt-2">Nome do Vencedor</p>
-            <p class="mt-2">Parabéns por atingir 6 pontos!</p>
+            <p class="mt-2">Parabéns por completar a cartela!</p>
             <button class="close-btn" id="close-btn">Fechar</button>
         </div>
     </div>
@@ -403,57 +403,94 @@
         let itemsForEachPlayer = 6;
         let twitchChannel = "omiuner";
         let somenteSubs = false;
+        let skinsLoaded = false;
+        let twitchClient = null;
+        let twitchConnecting = false;
 
-        function initializeTMI() {
-            const client = new tmi.Client({
-                channels: [twitchChannel] // O canal da Twitch será monitorado aqui
-            });
+        async function initializeTMI() {
+            const channelInput = document.getElementById('twitch-channel');
+            const setChannelButton = document.getElementById('set-channel');
+            const requestedChannel = (channelInput.value || twitchChannel).trim().replace(/^#/, '').toLowerCase();
 
-            client.connect().catch(console.error);
-            console.log("Conectado ao canal:", twitchChannel);
-            document.getElementById('twitch-channel').disabled = true;
-            document.getElementById('set-channel').disabled = true;
-            document.getElementById('set-channel').innerHTML = "Conectado";
+            if (!/^[a-z0-9_]{1,25}$/.test(requestedChannel)) {
+                console.error('Nome de canal da Twitch inválido.');
+                return;
+            }
+            if (twitchConnecting) return;
 
+            twitchConnecting = true;
+            setChannelButton.disabled = true;
+            setChannelButton.textContent = 'Conectando...';
+
+            const client = new tmi.Client({ channels: [requestedChannel] });
             client.on('message', (channel, tags, message, self) => {
-                // Ignore echoed messages.
                 if (self) return;
-
                 updateChatLog(tags, message);
 
-                if (message.toLowerCase().startsWith('!participar') && itensSorteados.length == 0 && (!somenteSubs || somenteSubs && tags.subscriber)) {
-                    tryToAddPlayer(tags, message);
+                if (!skinsLoaded) return;
+                if (message.trim().toLowerCase() === '!participar' &&
+                    itensSorteados.length === 0 &&
+                    (!somenteSubs || Boolean(tags.subscriber))) {
+                    tryToAddPlayer(tags);
                 }
             });
+            client.on('disconnected', () => {
+                if (twitchClient === client) {
+                    twitchClient = null;
+                    channelInput.disabled = false;
+                    setChannelButton.disabled = false;
+                    setChannelButton.textContent = 'Reconectar';
+                }
+            });
+
+            try {
+                await client.connect();
+                twitchClient = client;
+                twitchChannel = requestedChannel;
+                channelInput.value = requestedChannel;
+                channelInput.disabled = true;
+                setChannelButton.textContent = 'Conectado';
+                console.log('Conectado ao canal:', requestedChannel);
+            } catch (error) {
+                console.error('Não foi possível conectar ao canal da Twitch:', error);
+                setChannelButton.disabled = false;
+                setChannelButton.textContent = 'Tentar novamente';
+                channelInput.disabled = false;
+            } finally {
+                twitchConnecting = false;
+            }
         }
 
         let players = [];
 
         function updateChatLog(tags, message) {
-            // Atualiza o log lateral
             const logContainer = document.getElementById('log-container');
             const newLog = document.createElement('span');
-            newLog.innerHTML = `<b>${tags.username}</b>: ${message}`;
-            newLog.className = winnerList.includes(tags.username) ? 'block bg-yellow-400 p-2 border border-gray-300 rounded' : 'block bg-white p-2 border border-gray-300 rounded';
+            const username = document.createElement('b');
+            username.textContent = tags.username || 'usuário';
+            newLog.appendChild(username);
+            newLog.appendChild(document.createTextNode(': ' + String(message)));
+            newLog.className = winnerList.includes(tags.username)
+                ? 'block bg-yellow-400 p-2 border border-gray-300 rounded'
+                : 'block bg-white p-2 border border-gray-300 rounded';
 
             logContainer.appendChild(newLog);
-
-            // Se houver mais de 15 logs, remover o mais antigo
             if (logContainer.children.length > 15) {
                 logContainer.removeChild(logContainer.children[0]);
             }
         }
 
-        function tryToAddPlayer(tags, message) {
-            if (!players.find(p => p.username.toLowerCase() == tags.username.toLowerCase())) {
-                let idList = [];
-                while (idList.length < itemsForEachPlayer) {
-                    let newItem = skinList[Math.floor(Math.random() * skinList.length)];
-                    if (!idList.includes(newItem.id)) {
-                        idList.push(newItem.id);
-                    }
+        function tryToAddPlayer(tags) {
+            if (!skinsLoaded || skinList.length < itemsForEachPlayer || !tags.username) return;
+            if (!players.find(p => p.username.toLowerCase() === tags.username.toLowerCase())) {
+                const availableSkins = [...skinList];
+                const idList = [];
+                while (idList.length < itemsForEachPlayer && availableSkins.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * availableSkins.length);
+                    const newItem = availableSkins.splice(randomIndex, 1)[0];
+                    idList.push(newItem.id);
                 }
-                if (idList.length == itemsForEachPlayer) {
+                if (idList.length === itemsForEachPlayer) {
                     const listItem = document.createElement('li');
                     listItem.className = 'mb-4 flex justify-between items-center';
 
@@ -469,7 +506,7 @@
                         if (!itensDoPlayer.includes(id))
                             itensDoPlayer.push(id);
                     }
-                    if (itensDoPlayer.length == 6) {
+                    if (itensDoPlayer.length === itemsForEachPlayer) {
                         itensDoPlayer.forEach(item => {
                             let completeItem = skinList.find(sk => sk.id == item);
                             const img = document.createElement('img');
@@ -505,34 +542,32 @@
 
         // Função de sorteio
         function sortearItem() {
-            if (itensSorteaveis.length > 0) {
-                let randomIndex = Math.floor(Math.random() * itensSorteaveis.length);
-                let selectedItem;
-                do {
-                    randomIndex = Math.floor(Math.random() * itensSorteaveis.length);
-                    selectedItem = itensSorteaveis[randomIndex];
-                }
-                while (itensSorteados.some(it => it == selectedItem));
-                itensSorteados.push(selectedItem);
-                itensSorteaveis = itensSorteaveis.filter(it => it != selectedItem);
+            if (!skinsLoaded || itensSorteaveis.length === 0) return;
 
-                // Verifica quem acertou e atualiza na tela
-                let playersQueAcertaram = verificarAcertos(selectedItem);
-                let textoPlayersQueAcertaram = "Quem pontuou: ";
-                playersQueAcertaram.forEach(p => {
-                    textoPlayersQueAcertaram += p + ", ";
-                });
-                textoPlayersQueAcertaram = textoPlayersQueAcertaram.substring(0, textoPlayersQueAcertaram.length - 2);
+            const randomIndex = Math.floor(Math.random() * itensSorteaveis.length);
+            const selectedItem = itensSorteaveis.splice(randomIndex, 1)[0];
+            if (!selectedItem) return;
+            itensSorteados.push(selectedItem);
 
-                // Cria um novo log para o item sorteado
-                const logEntry = document.createElement('div');
-                logEntry.innerHTML = `<b>${selectedItem.name}</b><br /> <img src="${selectedItem.image}" class="item-image inline-block"><br /><b>${textoPlayersQueAcertaram}</b>`;
-                logEntry.className = 'log-item';
-
-                // Atualiza o log central
-                const logCentral = document.getElementById('log-central');
-                logCentral.prepend(logEntry);
-            }
+            const playersQueAcertaram = verificarAcertos(selectedItem);
+            const logEntry = document.createElement('div');
+            const itemName = document.createElement('b');
+            itemName.textContent = selectedItem.name;
+            const itemImage = document.createElement('img');
+            itemImage.src = selectedItem.image;
+            itemImage.alt = selectedItem.name;
+            itemImage.className = 'item-image inline-block';
+            const pointsLabel = document.createElement('b');
+            pointsLabel.textContent = playersQueAcertaram.length
+                ? 'Quem pontuou: ' + playersQueAcertaram.join(', ')
+                : 'Ninguém pontuou';
+            logEntry.appendChild(itemName);
+            logEntry.appendChild(document.createElement('br'));
+            logEntry.appendChild(itemImage);
+            logEntry.appendChild(document.createElement('br'));
+            logEntry.appendChild(pointsLabel);
+            logEntry.className = 'log-item';
+            document.getElementById('log-central').prepend(logEntry);
         }
 
         function verificarAcertos(selectedItem) {
@@ -550,14 +585,14 @@
 
             // Procura vencedor (após atualizar ranking, porque mais de um pode vencer ao mesmo tempo)
             players.forEach(player => {
-                if (player.acertos == 6) {
+                if (player.acertos === itemsForEachPlayer) {
                     if (!winnerList.some(pl => pl == player.username)) {
                         winnerList.push(player.username);
 
                         // Exibe o modal com o nome do vencedor
                         const modal = document.getElementById('modal-vencedor');
                         const overlay = document.getElementById('overlay');
-                        document.getElementById('vencedor-nome').innerText = player.username;
+                        document.getElementById('vencedor-nome').textContent = player.username;
 
                         // Mostra o modal e o overlay
                         modal.classList.add('show');
@@ -593,26 +628,42 @@
 
         // Função para buscar os dados da API e renderizar a lista de skins
         async function fetchSkins() {
+            const drawButton = document.getElementById('sortear-btn');
+            drawButton.disabled = true;
+            drawButton.textContent = 'Carregando skins...';
             try {
                 const response = await fetch('https://valorant-api.com/v1/weapons/skins?language=pt-BR');
+                if (!response.ok) throw new Error('A API retornou HTTP ' + response.status);
                 const data = await response.json();
-                const skins = data.data;  // Lista de skins
+                if (!Array.isArray(data.data)) throw new Error('Resposta inválida da API de skins.');
 
-                skins.forEach(skin => {
-                    // Verifica se o item tem displayIcon e displayName
-                    if (skin.displayIcon && skin.displayName && !skin.displayName.endsWith('Padrão') && !skin.displayName.endsWith('aleatória')) {
+                const loadedSkins = [];
+                data.data.forEach(skin => {
+                    if (skin.displayIcon && skin.displayName &&
+                        !skin.displayName.endsWith('Padrão') &&
+                        !skin.displayName.endsWith('aleatória')) {
                         let i = 1;
                         let proposedName;
                         do {
-                            proposedName = skin.displayName.substring(0, 3).toUpperCase() + '_' + i.toLocaleString('pt-BR', { minimumIntegerDigits: 3 });
+                            proposedName = skin.displayName.substring(0, 3).toUpperCase() + '_' +
+                                i.toLocaleString('pt-BR', { minimumIntegerDigits: 3 });
                             i++;
-                        } while (skinList.find(sk => sk.id == proposedName));
-                        const itemID = proposedName;
-                        skinList.push({ id: proposedName, name: skin.displayName, image: skin.displayIcon });
+                        } while (loadedSkins.some(item => item.id === proposedName));
+                        loadedSkins.push({ id: proposedName, name: skin.displayName, image: skin.displayIcon });
                     }
                 });
+                if (loadedSkins.length < itemsForEachPlayer) {
+                    throw new Error('A API retornou poucas skins válidas para iniciar o jogo.');
+                }
+                skinList = loadedSkins;
+                skinsLoaded = true;
+                drawButton.disabled = false;
+                drawButton.textContent = 'Sortear novo item';
             } catch (error) {
-                console.error('Erro ao buscar as skins:', error);
+                skinsLoaded = false;
+                drawButton.disabled = false;
+                drawButton.textContent = 'Tentar carregar skins novamente';
+                console.error('Erro ao buscar as skins. Clique no botão para tentar novamente:', error);
             }
         }
 
@@ -620,22 +671,17 @@
         fetchSkins();
 
         // Adiciona o evento aos botões
-        document.getElementById('sortear-btn').addEventListener('click', sortearItem);
+        document.getElementById('sortear-btn').addEventListener('click', () => {
+            if (!skinsLoaded) {
+                fetchSkins();
+                return;
+            }
+            sortearItem();
+        });
         document.getElementById('help-btn').addEventListener('click', function () {
             window.open('ajuda.html', '_blank'); // Redireciona para a página ajuda.html
         });
-        // Fechar ao clicar no botão "Fechar"
-        document.getElementById('close-btn').addEventListener('click', fecharModal);
-
-        // Fechar ao clicar no overlay
-        document.getElementById('overlay').addEventListener('click', fecharModal);
-
-        // Fechar ao apertar a tecla "Esc"
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                fecharModal();
-            }
-        });// Fechar ao clicar no botão "Fechar"
+// Fechar ao clicar no botão "Fechar"
         document.getElementById('close-btn').addEventListener('click', fecharModal);
 
         // Fechar ao clicar no overlay
@@ -650,12 +696,7 @@
 
         // Atualizar o canal da Twitch com o valor inserido no campo de texto
         document.getElementById('set-channel').addEventListener('click', () => {
-            const channelInput = document.getElementById('twitch-channel').value;
-            if (channelInput) {
-                twitchChannel = channelInput;
-                console.log("Novo canal da Twitch definido:", twitchChannel);
-                initializeTMI(); // Reinicializa o cliente com o novo canal
-            }
+            initializeTMI();
         });
 
         // Listener para o checkbox
