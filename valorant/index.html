@@ -22,7 +22,8 @@ html {
 
 body.bg-gray-100 {
     min-height: 100vh;
-    height: auto;
+    height: 100vh;
+    overflow: hidden;
     margin: 0;
     color: #e5eaf5;
     background:
@@ -36,38 +37,44 @@ body > .bg-blue-600 {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 14px 22px;
-    padding: 18px 24px;
+    gap: 12px 20px;
+    min-height: 88px;
+    padding: 14px 24px;
     color: #f8fafc;
-    background: rgba(15, 23, 42, .92);
+    background: linear-gradient(110deg, #111827 0%, #172554 55%, #1e1b4b 100%);
     border-bottom: 1px solid rgba(148, 163, 184, .2);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, .2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .24);
     font-size: 1rem;
 }
 
 body > .bg-blue-600 > .flex:first-child {
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 10px 12px;
 }
 
 body > .bg-blue-600 label {
     font-size: .9rem;
     font-weight: 600;
-    color: #cbd5e1;
+    color: #dbeafe;
 }
 
 body > .bg-blue-600 input[type="text"] {
     min-width: 190px;
-    border: 1px solid #475569;
-    border-radius: 10px;
-    background: #111827;
+    min-height: 42px;
+    padding: 9px 12px;
+    border: 1px solid rgba(148, 163, 184, .38);
+    border-radius: 11px;
+    background: rgba(15, 23, 42, .82);
     color: #f8fafc;
+    font-size: .9rem;
     outline: none;
+    transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
 }
 
 body > .bg-blue-600 input[type="text"]:focus {
-    border-color: #818cf8;
-    box-shadow: 0 0 0 3px rgba(129, 140, 248, .18);
+    border-color: #a5b4fc;
+    background: #0f172a;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, .2);
 }
 
 body > .bg-blue-600 > .mx-auto {
@@ -80,8 +87,7 @@ body > .bg-blue-600 > .mx-auto {
 }
 
 .button,
-.set-channel,
-.close-btn {
+.set-channel {
     border: 1px solid rgba(255, 255, 255, .12);
     border-radius: 10px;
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
@@ -91,8 +97,7 @@ body > .bg-blue-600 > .mx-auto {
 }
 
 .button:hover,
-.set-channel:hover,
-.close-btn:hover {
+.set-channel:hover {
     filter: brightness(1.08);
     transform: translateY(-1px);
     box-shadow: 0 8px 20px rgba(99, 102, 241, .3);
@@ -105,19 +110,106 @@ body > .bg-blue-600 > .mx-auto {
     transform: none;
 }
 
-/* Área principal: jogadores, sorteio/ranking e chat */
+#set-channel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-width: 132px;
+    min-height: 42px;
+    padding: 9px 15px;
+    border: 1px solid rgba(165, 180, 252, .48);
+    border-radius: 11px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    box-shadow: 0 5px 16px rgba(79, 70, 229, .28);
+    color: #fff;
+    font-size: .9rem;
+    font-weight: 700;
+    letter-spacing: .01em;
+    white-space: nowrap;
+}
+
+#set-channel::before {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #c7d2fe;
+    box-shadow: 0 0 0 3px rgba(199, 210, 254, .15);
+    content: "";
+}
+
+#set-channel.is-connecting {
+    background: #334155;
+    border-color: rgba(148, 163, 184, .35);
+    box-shadow: none;
+}
+
+#set-channel.is-connecting::before {
+    background: #fbbf24;
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, .15);
+}
+
+#set-channel.is-connected {
+    background: linear-gradient(135deg, #047857, #059669);
+    border-color: rgba(110, 231, 183, .45);
+    box-shadow: 0 5px 16px rgba(5, 150, 105, .22);
+}
+
+#set-channel.is-connected::before {
+    background: #a7f3d0;
+    box-shadow: 0 0 0 3px rgba(167, 243, 208, .16);
+}
+
+#set-channel.is-error {
+    background: linear-gradient(135deg, #be123c, #e11d48);
+    border-color: rgba(253, 164, 175, .45);
+}
+
+#set-channel.is-error::before {
+    background: #fecdd3;
+    box-shadow: 0 0 0 3px rgba(254, 205, 211, .16);
+}
+
+#set-channel:disabled {
+    opacity: 1;
+    cursor: default;
+}
+
+#set-channel:disabled:hover {
+    transform: none;
+    filter: none;
+}
+
+body > .bg-blue-600 > .flex:nth-child(2) {
+    gap: 9px;
+    margin-left: 0;
+    padding: 9px 12px;
+    border: 1px solid rgba(148, 163, 184, .2);
+    border-radius: 11px;
+    background: rgba(15, 23, 42, .45);
+}
+
+body > .bg-blue-600 input[type="checkbox"] {
+    accent-color: #818cf8;
+}
+
+/* Área principal: jogadores, sorteio, ranking e eventos */
 body > .flex.flex-grow {
     display: grid;
-    grid-template-columns: minmax(0, 1.65fr) minmax(280px, .85fr) minmax(250px, .75fr);
+    grid-template-columns: minmax(0, 1.55fr) minmax(280px, .9fr) minmax(240px, .7fr);
+    grid-template-rows: minmax(0, 1fr);
     align-items: stretch;
     gap: 18px;
-    min-height: calc(100vh - 88px);
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
     padding: 20px;
 }
 
 body > .flex.flex-grow > .w-3\/5,
 body > .flex.flex-grow > .w-1\/5,
-body > .flex.flex-grow > .main-container {
+body > .flex.flex-grow > .main-container,
+body > .flex.flex-grow > .event-panel {
     width: auto;
     min-width: 0;
     height: auto;
@@ -129,12 +221,14 @@ body > .flex.flex-grow > .main-container {
 }
 
 body > .flex.flex-grow > .w-3\/5,
-body > .flex.flex-grow > .w-1\/5 {
+body > .flex.flex-grow > .w-1\/5,
+body > .flex.flex-grow > .event-panel {
     padding: 18px;
 }
 
 body > .flex.flex-grow > .w-3\/5 > p,
 body > .flex.flex-grow > .w-1\/5 > p,
+body > .flex.flex-grow > .event-panel > p,
 #ranking-container > p {
     margin-bottom: 16px;
     color: #f1f5f9;
@@ -222,12 +316,57 @@ body > .flex.flex-grow > .main-container {
     letter-spacing: .04em;
 }
 
+.winner-wait {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid rgba(251, 191, 36, .35);
+    border-radius: 12px;
+    background: rgba(120, 53, 15, .2);
+    color: #fde68a;
+    font-size: .9rem;
+}
+
+.winner-wait[hidden] {
+    display: none;
+}
+
+.winner-wait-time {
+    flex: 0 0 auto;
+    color: #f8fafc;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.winner-presence-alert {
+    padding: 12px 14px;
+    border: 1px solid rgba(52, 211, 153, .35);
+    border-radius: 12px;
+    background: rgba(6, 78, 59, .35);
+    color: #a7f3d0;
+    font-size: .9rem;
+}
+
+.winner-presence-alert[hidden],
+.remove-winner-btn[hidden] {
+    display: none;
+}
+
+.remove-winner-btn {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+}
+
 #log-central {
-    flex: 1 1 auto;
-    height: auto;
-    min-height: 280px;
+    flex: 1 1 0;
+    height: 0;
+    min-height: 0;
     margin: 0;
     padding: 12px;
+    overflow-y: auto;
     border: 1px solid rgba(148, 163, 184, .18);
     border-radius: 12px;
     background: rgba(15, 23, 42, .78);
@@ -250,22 +389,29 @@ body > .flex.flex-grow > .main-container {
     background: rgba(15, 23, 42, .7);
 }
 
-/* Chat */
-body > .flex.flex-grow > .w-1\/5:last-of-type {
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-#log-container {
+.event-panel {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    min-height: 0;
 }
 
-#log-container > span {
+#event-log {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.event-log-item {
     padding: 10px 12px;
     overflow-wrap: anywhere;
-    border: 1px solid rgba(148, 163, 184, .12);
+    border: 1px solid rgba(148, 163, 184, .14);
+    border-left: 3px solid #818cf8;
     border-radius: 10px;
     background: rgba(30, 41, 59, .78);
     color: #cbd5e1;
@@ -273,11 +419,34 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
     line-height: 1.45;
 }
 
-#log-container > span b {
-    color: #a5b4fc;
+.event-log-item[data-type="player"] {
+    border-left-color: #38bdf8;
 }
 
-/* Ajuda e modal */
+.event-log-item[data-type="score"] {
+    border-left-color: #34d399;
+}
+
+.event-log-item[data-type="winner"] {
+    border-left-color: #fbbf24;
+}
+
+.event-log-item[data-type="presence"] {
+    border-left-color: #c084fc;
+}
+
+.event-log-item[data-type="error"] {
+    border-left-color: #fb7185;
+}
+
+.event-log-time {
+    display: block;
+    margin-bottom: 3px;
+    color: #94a3b8;
+    font-size: .75rem;
+}
+
+/* Ajuda */
 .help-btn {
     z-index: 20;
     width: 38px;
@@ -288,35 +457,16 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
     box-shadow: 0 5px 16px rgba(0, 0, 0, .2);
 }
 
-.modal {
-    z-index: 1001;
-    width: min(420px, calc(100vw - 32px));
-    border: 1px solid rgba(148, 163, 184, .22);
-    border-radius: 18px;
-    background: #111827;
-    color: #f8fafc;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, .45);
-}
-
-.modal p {
-    overflow-wrap: anywhere;
-}
-
-.overlay {
-    z-index: 1000;
-    backdrop-filter: blur(3px);
-    background: rgba(2, 6, 23, .72);
-}
-
 /* Tablets */
 @media (max-width: 1100px) {
     body > .flex.flex-grow {
         grid-template-columns: minmax(0, 1.3fr) minmax(260px, .9fr);
+        grid-template-rows: minmax(0, 1fr) minmax(0, 320px);
     }
 
-    body > .flex.flex-grow > .w-1\/5:last-of-type {
+    body > .flex.flex-grow > .event-panel {
         grid-column: 1 / -1;
-        max-height: 360px;
+        max-height: 320px;
     }
 
     body > .bg-blue-600 > .mx-auto {
@@ -326,6 +476,12 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
 
 /* Celulares */
 @media (max-width: 700px) {
+    body.bg-gray-100 {
+        height: auto;
+        min-height: 100vh;
+        overflow: auto;
+    }
+
     body > .bg-blue-600 {
         padding: 16px;
         gap: 12px;
@@ -348,26 +504,33 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
 
     body > .flex.flex-grow {
         grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        flex: 0 0 auto;
+        min-height: calc(100vh - 88px);
+        overflow: visible;
         gap: 12px;
         padding: 12px;
     }
 
     body > .flex.flex-grow > .w-3\/5,
     body > .flex.flex-grow > .w-1\/5,
-    body > .flex.flex-grow > .main-container {
+    body > .flex.flex-grow > .main-container,
+    body > .flex.flex-grow > .event-panel {
         grid-column: auto;
         max-height: none;
     }
 
     body > .flex.flex-grow > .w-3\/5 {
         order: 1;
+        max-height: min(60vh, 600px);
+        overflow-y: auto;
     }
 
     body > .flex.flex-grow > .main-container {
         order: 2;
     }
 
-    body > .flex.flex-grow > .w-1\/5:last-of-type {
+    body > .flex.flex-grow > .event-panel {
         order: 3;
         max-height: 300px;
     }
@@ -389,7 +552,10 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
     }
 
     #log-central {
+        flex: 0 1 auto;
+        height: min(45vh, 420px);
         min-height: 240px;
+        max-height: 420px;
     }
 }
 
@@ -415,7 +581,7 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
         <div class="flex items-center space-x-4">
             <label for="twitch-channel" class="text-white text-lg">Canal da Twitch:</label>
             <input id="twitch-channel" type="text" class="px-2 py-1 rounded text-black" placeholder="Digite o canal" />
-            <button id="set-channel" class="button">Confirmar</button>
+            <button id="set-channel" class="button set-channel" type="button">Conectar</button>
         </div>
         <div class="flex items-center space-x-1 ml-4">
             <input type="checkbox" id="toggle-feature" class="h-5 w-5" />
@@ -446,28 +612,29 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
             <!-- Botão de sortear ocupando 10% da tela -->
             <button id="sortear-btn" class="button fixed-button h-[10vh]">Sortear novo item</button>
 
+            <div id="winner-wait" class="winner-wait" role="status" aria-live="polite" hidden>
+                <span id="winner-wait-label"></span>
+                <time id="winner-wait-time" class="winner-wait-time">00:00</time>
+            </div>
+            <div id="winner-presence-alert" class="winner-presence-alert" role="status" aria-live="polite" hidden></div>
+            <button id="continue-draw-btn" class="button remove-winner-btn" type="button" hidden>
+                Continuar sorteio para outro vencedor
+            </button>
+            <button id="remove-winner-btn" class="button remove-winner-btn" type="button" hidden>
+                Remover jogador e continuar sorteio
+            </button>
+
             <!-- Log central ocupando 60% da tela -->
             <div id="log-central" class="log-container h-[60vh] mt-6">
                 <!-- Logs dos itens sorteados serão adicionados aqui -->
             </div>
         </div>
 
-        <!-- Log lateral direita -->
-        <div class="w-1/5 bg-gray-200 p-4 overflow-y-auto">
-            <p class="font-bold text-lg mb-4">Chat:</p>
-            <div id="log-container" class="space-y-2">
-                <!-- Logs serão gerados aqui -->
-            </div>
-        </div>
+        <aside class="event-panel">
+            <p class="font-bold text-lg mb-4">Eventos do jogo:</p>
+            <ol id="event-log" aria-live="polite" aria-relevant="additions"></ol>
+        </aside>
 
-        <!-- Modal de vitória -->
-        <div class="overlay" id="overlay"></div>
-        <div class="modal" id="modal-vencedor">
-            <h2 class="text-2xl font-bold">Temos um vencedor!</h2>
-            <p id="vencedor-nome" class="text-lg mt-2">Nome do Vencedor</p>
-            <p class="mt-2">Parabéns por atingir 6 pontos!</p>
-            <button class="close-btn" id="close-btn">Fechar</button>
-        </div>
     </div>
 
     <script>
@@ -476,52 +643,205 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
         let itensSorteaveis = [];
         let itensSorteados = [];
         let winnerList = [];
+        let presenceConfirmed = new Set();
         let itemsForEachPlayer = 6;
         let twitchChannel = "omiuner";
         let somenteSubs = false;
+        let skinsLoaded = null;
+        let winnerWaitStartedAt = null;
+        let winnerWaitTimer = null;
+        let winnerWaitTimeout = null;
+        let awaitedWinnerNames = [];
+
+        function addEventLog(message, type = 'game') {
+            const eventLog = document.getElementById('event-log');
+            const entry = document.createElement('li');
+            const time = document.createElement('time');
+            const text = document.createElement('span');
+
+            entry.className = 'event-log-item';
+            entry.dataset.type = type;
+            time.className = 'event-log-time';
+            time.dateTime = new Date().toISOString();
+            time.textContent = new Date().toLocaleTimeString('pt-BR');
+            text.textContent = message;
+            entry.append(time, text);
+            eventLog.prepend(entry);
+
+            if (eventLog.children.length > 100) {
+                eventLog.removeChild(eventLog.lastElementChild);
+            }
+        }
+
+        function formatElapsedTime(totalSeconds) {
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            const pad = value => String(value).padStart(2, '0');
+            return hours > 0
+                ? `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+                : `${pad(minutes)}:${pad(seconds)}`;
+        }
+
+        function updateWinnerWaitTime() {
+            const elapsedSeconds = Math.floor((Date.now() - winnerWaitStartedAt) / 1000);
+            document.getElementById('winner-wait-time').textContent = formatElapsedTime(elapsedSeconds);
+        }
+
+        function startWinnerWait(winners) {
+            if (winnerWaitStartedAt !== null) return;
+
+            awaitedWinnerNames = winners.filter(name => !presenceConfirmed.has(name.toLowerCase()));
+            if (!awaitedWinnerNames.length) return;
+            winnerWaitStartedAt = Date.now();
+            document.getElementById('winner-presence-alert').hidden = true;
+            document.getElementById('continue-draw-btn').hidden = true;
+            document.getElementById('remove-winner-btn').hidden = true;
+            document.getElementById('winner-wait-label').textContent =
+                `Aguardando mensagem de ${awaitedWinnerNames.join(' ou ')}.`;
+            document.getElementById('winner-wait').hidden = false;
+            document.getElementById('sortear-btn').disabled = true;
+            updateWinnerWaitTime();
+            winnerWaitTimer = setInterval(updateWinnerWaitTime, 1000);
+            winnerWaitTimeout = setTimeout(() => {
+                updateWinnerWaitTime();
+                winnerWaitTimeout = null;
+                const removeButton = document.getElementById('remove-winner-btn');
+                removeButton.textContent = awaitedWinnerNames.length > 1
+                    ? 'Remover jogadores e continuar sorteio'
+                    : 'Remover jogador e continuar sorteio';
+                removeButton.hidden = false;
+            }, 10000);
+        }
+
+        function confirmWinnerPresence(winner) {
+            const awaited = awaitedWinnerNames.some(name => name.toLowerCase() === winner.toLowerCase());
+            if (!awaited) return;
+
+            if (winnerWaitTimer !== null) {
+                updateWinnerWaitTime();
+                clearInterval(winnerWaitTimer);
+                winnerWaitTimer = null;
+            }
+            if (winnerWaitTimeout !== null) {
+                clearTimeout(winnerWaitTimeout);
+                winnerWaitTimeout = null;
+            }
+            document.getElementById('winner-wait').hidden = true;
+            document.getElementById('remove-winner-btn').hidden = true;
+            const alert = document.getElementById('winner-presence-alert');
+            alert.textContent = `Presença confirmada por ${winner}.`;
+            alert.hidden = false;
+            document.getElementById('continue-draw-btn').hidden = false;
+        }
+
+        function continueDrawForMoreWinners() {
+            if (winnerWaitTimer !== null) clearInterval(winnerWaitTimer);
+            if (winnerWaitTimeout !== null) clearTimeout(winnerWaitTimeout);
+            winnerWaitTimer = null;
+            winnerWaitTimeout = null;
+            winnerWaitStartedAt = null;
+            awaitedWinnerNames = [];
+            document.getElementById('winner-wait').hidden = true;
+            document.getElementById('winner-presence-alert').hidden = true;
+            document.getElementById('continue-draw-btn').hidden = true;
+            document.getElementById('sortear-btn').disabled = false;
+            addEventLog('Sorteio retomado para buscar outro vencedor.', 'game');
+        }
+
+        function removeAwaitingWinnersAndContinue() {
+            const removedNames = new Set(awaitedWinnerNames.map(name => name.toLowerCase()));
+            players = players.filter(player => !removedNames.has(player.username.toLowerCase()));
+            winnerList = winnerList.filter(name => !removedNames.has(name.toLowerCase()));
+            removedNames.forEach(name => presenceConfirmed.delete(name));
+
+            Array.from(playerList.children).forEach(item => {
+                if (removedNames.has((item.dataset.username || '').toLowerCase())) item.remove();
+            });
+
+            if (winnerWaitTimer !== null) clearInterval(winnerWaitTimer);
+            if (winnerWaitTimeout !== null) clearTimeout(winnerWaitTimeout);
+            winnerWaitTimer = null;
+            winnerWaitTimeout = null;
+            winnerWaitStartedAt = null;
+            awaitedWinnerNames = [];
+            document.getElementById('winner-wait').hidden = true;
+            document.getElementById('winner-presence-alert').hidden = true;
+            document.getElementById('continue-draw-btn').hidden = true;
+            document.getElementById('remove-winner-btn').hidden = true;
+            document.getElementById('winner-wait-time').textContent = '00:00';
+            document.getElementById('sortear-btn').disabled = false;
+            updateRanking();
+            addEventLog(`Jogador${removedNames.size > 1 ? 'es' : ''} sem presença removido${removedNames.size > 1 ? 's' : ''}; sorteio retomado.`, 'error');
+        }
 
         function initializeTMI() {
             const client = new tmi.Client({
                 channels: [twitchChannel] // O canal da Twitch será monitorado aqui
             });
 
-            client.connect().catch(console.error);
-            console.log("Conectado ao canal:", twitchChannel);
-            document.getElementById('twitch-channel').disabled = true;
-            document.getElementById('set-channel').disabled = true;
-            document.getElementById('set-channel').innerHTML = "Conectado";
+            client.on('disconnected', reason => {
+                addEventLog(`Conexão com a Twitch encerrada: ${reason || 'sem detalhes'}.`, 'error');
+            });
 
             client.on('message', (channel, tags, message, self) => {
-                // Ignore echoed messages.
                 if (self) return;
 
-                updateChatLog(tags, message);
-
-                if (message.toLowerCase().startsWith('!participar') && itensSorteados.length == 0 && (!somenteSubs || somenteSubs && tags.subscriber)) {
-                    tryToAddPlayer(tags, message);
+                const username = (tags.username || '').toLowerCase();
+                const winner = winnerList.find(name => name.toLowerCase() === username);
+                if (winner) {
+                    if (!presenceConfirmed.has(username)) {
+                        presenceConfirmed.add(username);
+                        confirmWinnerPresence(winner);
+                        addEventLog(`${winner} confirmou presença no chat após vencer.`, 'presence');
+                    }
                 }
+
+                if (!message.toLowerCase().startsWith('!participar') || itensSorteados.length > 0) return;
+                if (somenteSubs && !tags.subscriber) {
+                    addEventLog(`${tags.username} tentou participar, mas o bingo está restrito a subs.`, 'error');
+                    return;
+                }
+
+                skinsLoaded.then(() => tryToAddPlayer(tags));
             });
+
+            addEventLog(`Conectando ao canal ${twitchChannel}...`);
+            const connectButton = document.getElementById('set-channel');
+            connectButton.classList.remove('is-connected', 'is-error');
+            connectButton.classList.add('is-connecting');
+            connectButton.textContent = 'Conectando';
+            client.connect()
+                .then(() => {
+                    connectButton.classList.remove('is-connecting', 'is-error');
+                    connectButton.classList.add('is-connected');
+                    connectButton.textContent = 'Conectado';
+                    addEventLog(`Conectado ao canal ${twitchChannel}.`);
+                })
+                .catch(error => {
+                    console.error(error);
+                    addEventLog(`Falha ao conectar ao canal ${twitchChannel}.`, 'error');
+                    document.getElementById('twitch-channel').disabled = false;
+                    connectButton.disabled = false;
+                    connectButton.classList.remove('is-connecting', 'is-connected');
+                    connectButton.classList.add('is-error');
+                    connectButton.textContent = 'Tentar novamente';
+                });
+            document.getElementById('twitch-channel').disabled = true;
+            connectButton.disabled = true;
         }
 
         let players = [];
 
-        function updateChatLog(tags, message) {
-            // Atualiza o log lateral
-            const logContainer = document.getElementById('log-container');
-            const newLog = document.createElement('span');
-            newLog.innerHTML = `<b>${tags.username}</b>: ${message}`;
-            newLog.className = winnerList.includes(tags.username) ? 'block bg-yellow-400 p-2 border border-gray-300 rounded' : 'block bg-white p-2 border border-gray-300 rounded';
+        function tryToAddPlayer(tags) {
+            if (itensSorteados.length > 0) return;
 
-            logContainer.appendChild(newLog);
-
-            // Se houver mais de 15 logs, remover o mais antigo
-            if (logContainer.children.length > 15) {
-                logContainer.removeChild(logContainer.children[0]);
+            if (!skinList.length || skinList.length < itemsForEachPlayer) {
+                addEventLog('Não foi possível participar: as skins não carregaram corretamente. Atualize a página e tente novamente.', 'error');
+                return;
             }
-        }
 
-        function tryToAddPlayer(tags, message) {
-            if (!players.find(p => p.username.toLowerCase() == tags.username.toLowerCase())) {
+            if (tags.username && !players.find(p => p.username.toLowerCase() == tags.username.toLowerCase())) {
                 let idList = [];
                 while (idList.length < itemsForEachPlayer) {
                     let newItem = skinList[Math.floor(Math.random() * skinList.length)];
@@ -532,6 +852,7 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
                 if (idList.length == itemsForEachPlayer) {
                     const listItem = document.createElement('li');
                     listItem.className = 'mb-4 flex justify-between items-center';
+                    listItem.dataset.username = tags.username;
 
                     const itemName = document.createElement('span');
                     itemName.textContent = tags.username;
@@ -564,6 +885,7 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
 
                         playerList.appendChild(listItem);
                         players.push({ username: tags.username, itens: itensDoPlayer, acertos: 0 });
+                        addEventLog(`${tags.username} entrou no bingo.`, 'player');
                         updateRanking();
                         let adicionarItens = [];
                         itensDoPlayer.forEach(item => adicionarItens.push(skinList.find(it => it.id == item)));
@@ -624,34 +946,23 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
             });
             updateRanking();
 
+            if (returnList.length) {
+                addEventLog(`${selectedItem.name} marcou ponto para ${returnList.join(', ')}.`, 'score');
+            } else {
+                addEventLog(`${selectedItem.name} foi sorteada; ninguém pontuou.`, 'score');
+            }
+
             // Procura vencedor (após atualizar ranking, porque mais de um pode vencer ao mesmo tempo)
             players.forEach(player => {
-                if (player.acertos == 6) {
-                    if (!winnerList.some(pl => pl == player.username)) {
-                        winnerList.push(player.username);
-
-                        // Exibe o modal com o nome do vencedor
-                        const modal = document.getElementById('modal-vencedor');
-                        const overlay = document.getElementById('overlay');
-                        document.getElementById('vencedor-nome').innerText = player.username;
-
-                        // Mostra o modal e o overlay
-                        modal.classList.add('show');
-                        overlay.classList.add('show');
-                    }
+                if (player.acertos == 6 && !winnerList.includes(player.username)) {
+                    winnerList.push(player.username);
+                    addEventLog(`${player.username} completou as seis skins e venceu!`, 'winner');
                 }
             });
 
+            if (winnerList.length) startWinnerWait(winnerList);
+
             return returnList;
-        }
-
-        // Função para fechar o modal e o overlay
-        function fecharModal() {
-            const modal = document.getElementById('modal-vencedor');
-            const overlay = document.getElementById('overlay');
-
-            modal.classList.remove('show');
-            overlay.classList.remove('show');
         }
 
         // Função para atualizar o ranking
@@ -671,8 +982,10 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
         async function fetchSkins() {
             try {
                 const response = await fetch('https://valorant-api.com/v1/weapons/skins?language=pt-BR');
+                if (!response.ok) throw new Error(`API respondeu com status ${response.status}`);
                 const data = await response.json();
-                const skins = data.data;  // Lista de skins
+                const skins = data.data;
+                if (!Array.isArray(skins)) throw new Error('Resposta da API não contém uma lista de skins.');
 
                 skins.forEach(skin => {
                     // Verifica se o item tem displayIcon e displayName
@@ -689,41 +1002,20 @@ body > .flex.flex-grow > .w-1\/5:last-of-type {
                 });
             } catch (error) {
                 console.error('Erro ao buscar as skins:', error);
+                addEventLog('Falha ao carregar as skins do Valorant. Atualize a página antes de iniciar a partida.', 'error');
             }
         }
 
         // Chama a função de busca quando a página carregar
-        fetchSkins();
+        skinsLoaded = fetchSkins();
 
         // Adiciona o evento aos botões
         document.getElementById('sortear-btn').addEventListener('click', sortearItem);
+        document.getElementById('continue-draw-btn').addEventListener('click', continueDrawForMoreWinners);
+        document.getElementById('remove-winner-btn').addEventListener('click', removeAwaitingWinnersAndContinue);
         document.getElementById('help-btn').addEventListener('click', function () {
             window.open('ajuda.html', '_blank'); // Redireciona para a página ajuda.html
         });
-        // Fechar ao clicar no botão "Fechar"
-        document.getElementById('close-btn').addEventListener('click', fecharModal);
-
-        // Fechar ao clicar no overlay
-        document.getElementById('overlay').addEventListener('click', fecharModal);
-
-        // Fechar ao apertar a tecla "Esc"
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                fecharModal();
-            }
-        });// Fechar ao clicar no botão "Fechar"
-        document.getElementById('close-btn').addEventListener('click', fecharModal);
-
-        // Fechar ao clicar no overlay
-        document.getElementById('overlay').addEventListener('click', fecharModal);
-
-        // Fechar ao apertar a tecla "Esc"
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                fecharModal();
-            }
-        });
-
         // Atualizar o canal da Twitch com o valor inserido no campo de texto
         document.getElementById('set-channel').addEventListener('click', () => {
             const channelInput = document.getElementById('twitch-channel').value;
