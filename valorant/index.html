@@ -8,326 +8,402 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="./tmi.min.js"></script>
     <style>
-        /* Importando fontes modernas do Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-    
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #e9ecef;
-            color: #343a40;
-        }
-    
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 2rem;
-        }
-    
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            background: linear-gradient(135deg, #007bff, #00c6ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 2rem;
-        }
-    
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-    
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-    
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-    
-        .card h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #007bff;
-            margin-bottom: 1rem;
-        }
-    
-        .button {
-            background: linear-gradient(135deg, #007bff, #00c6ff);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-        }
-    
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-        }
-    
-        .button:active {
-            transform: translateY(0);
-        }
-    
-        .result {
-            font-size: 1.1rem;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #007bff;
-        }
-    
-        /* Estilo para o select */
-        select {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 8px;
-            border: 2px solid #e1e1e1;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-        }
-    
-        select:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-        }
-    
-        /* Animação para os resultados */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-    
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    
-        .result {
-            animation: fadeIn 0.3s ease-out;
-        }
-    
-        /* Responsividade para telas menores */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-    
-            h1 {
-                font-size: 2rem;
-            }
-    
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    
-        .ranking-container {
-            background-color: #f1f3f5;
-            border: 2px solid #dee2e6;
-            border-radius: 5px;
-            padding: 10px;
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: black;
-            overflow-y: auto;
-        }
-    
-        .ranking-item {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-        }
-    
-        /* Define um tamanho fixo para as imagens da lista */
-        .item-image {
-            width: 150px;
-            height: 150px;
-            object-fit: contain;
-            position: relative;
-            z-index: 0;
-        }
-    
-        /* Adiciona uma borda para visualizar melhor o efeito */
-        .item-image.highlight-background {
-            border: 5px solid #28a745;
-        }
-    
-        /* Define o container principal com display flex e orientação de coluna */
-        .main-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-    
-        /* Botão fixo que ocupa 10% da altura da tela */
-        .fixed-button {
-            background-color: #ff4757;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            height: 10vh;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-    
-        /* Log central que ocupa 90% da altura da tela e permite rolagem */
-        .log-container {
-            background-color: #f8fafc;
-            border-radius: 5px;
-            border: 1px solid #e2e8f0;
-            padding: 10px;
-            height: 90vh;
-            overflow-y: auto;
-        }
-    
-        /* Estilo para cada item no log */
-        .log-item {
-            padding: 10px;
-            background-color: #f3f4f6;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 5px;
-        }
-    
-        /* Classe para adicionar um background à imagem */
-        .highlight-background {
-            position: relative;
-        }
-    
-        .highlight-background::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(40, 167, 69, 0.5);
-            z-index: 1;
-            pointer-events: none;
-        }
-    
-        .help-btn {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
-            font-size: 20px;
-            cursor: pointer;
-            text-align: center;
-            line-height: 40px;
-            transition: background-color 0.3s;
-        }
-    
-        .help-btn:hover {
-            background-color: #e0e0e0;
-        }
-    
-        /* Modal de vitória */
-        .modal {
-            display: none;
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            z-index: 1000;
-            text-align: center;
-            width: 300px;
-        }
-    
-        .modal h2 {
-            font-size: 2em;
-            margin: 0 0 20px;
-        }
-    
-        .modal p {
-            font-size: 1.3em;
-        }
-    
-        /* Fundo escurecido */
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-    
-        /* Mostrar o modal */
-        .modal.show,
-        .overlay.show {
-            display: block;
-        }
-    
-        /* Botão de fechar o modal */
-        .close-btn {
-            background-color: #4a90e2;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            margin-top: 20px;
-        }
-    
-        .close-btn:hover {
-            background-color: #357ab8;
-        }
-    
-        .set-channel {
-            background-color: white;
-            color: #4a90e2;
-            margin-top: 10px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-    
-        .set-channel:disabled {
-            background-color: #4ae28e;
-            color: white;
-            margin-top: 10px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: auto;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
+        /*
+ * Preview de layout para o Bingo do Valorant.
+ * Ainda não integrado ao HTML nem enviado ao GitHub.
+ * Para testar, cole este bloco no final do <style> de valorant/index.html.
+ */
+
+/* Base visual */
+html {
+    min-height: 100%;
+    background: #0b1020;
+}
+
+body.bg-gray-100 {
+    min-height: 100vh;
+    height: auto;
+    margin: 0;
+    color: #e5eaf5;
+    background:
+        radial-gradient(ellipse at top left, rgba(81, 97, 180, .22), transparent 42%),
+        #0b1020;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Cabeçalho com quebra responsiva */
+body > .bg-blue-600 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 22px;
+    padding: 18px 24px;
+    color: #f8fafc;
+    background: rgba(15, 23, 42, .92);
+    border-bottom: 1px solid rgba(148, 163, 184, .2);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .2);
+    font-size: 1rem;
+}
+
+body > .bg-blue-600 > .flex:first-child {
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+body > .bg-blue-600 label {
+    font-size: .9rem;
+    font-weight: 600;
+    color: #cbd5e1;
+}
+
+body > .bg-blue-600 input[type="text"] {
+    min-width: 190px;
+    border: 1px solid #475569;
+    border-radius: 10px;
+    background: #111827;
+    color: #f8fafc;
+    outline: none;
+}
+
+body > .bg-blue-600 input[type="text"]:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, .18);
+}
+
+body > .bg-blue-600 > .mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+    font-size: clamp(1.25rem, 2.2vw, 1.9rem);
+    font-weight: 800;
+    letter-spacing: -.04em;
+    white-space: nowrap;
+}
+
+.button,
+.set-channel,
+.close-btn {
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    box-shadow: 0 5px 16px rgba(99, 102, 241, .22);
+    transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
+}
+
+.button:hover,
+.set-channel:hover,
+.close-btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, .3);
+}
+
+.button:disabled,
+.set-channel:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Área principal: jogadores, sorteio/ranking e chat */
+body > .flex.flex-grow {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, .85fr) minmax(250px, .75fr);
+    align-items: stretch;
+    gap: 18px;
+    min-height: calc(100vh - 88px);
+    padding: 20px;
+}
+
+body > .flex.flex-grow > .w-3\/5,
+body > .flex.flex-grow > .w-1\/5,
+body > .flex.flex-grow > .main-container {
+    width: auto;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    border: 1px solid rgba(148, 163, 184, .18);
+    border-radius: 16px;
+    background: rgba(17, 24, 39, .82);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .16);
+}
+
+body > .flex.flex-grow > .w-3\/5,
+body > .flex.flex-grow > .w-1\/5 {
+    padding: 18px;
+}
+
+body > .flex.flex-grow > .w-3\/5 > p,
+body > .flex.flex-grow > .w-1\/5 > p,
+#ranking-container > p {
+    margin-bottom: 16px;
+    color: #f1f5f9;
+    font-size: 1rem;
+    letter-spacing: -.01em;
+}
+
+body > .flex.flex-grow > .w-3\/5 {
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+#player-list {
+    margin: 0;
+    padding: 0;
+}
+
+#player-list > li {
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid rgba(148, 163, 184, .14);
+    border-radius: 12px;
+    background: rgba(30, 41, 59, .66);
+}
+
+#player-list > li > span {
+    min-width: 90px;
+    color: #e2e8f0;
+    overflow-wrap: anywhere;
+}
+
+.item-image {
+    width: clamp(66px, 7.5vw, 110px);
+    height: clamp(66px, 7.5vw, 110px);
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+#player-list .item-image {
+    background: rgba(15, 23, 42, .7);
+}
+
+.item-image.highlight-background {
+    border: 3px solid #34d399;
+    background-color: rgba(16, 185, 129, .12);
+}
+
+/* Ranking e sorteio */
+body > .flex.flex-grow > .main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 14px;
+}
+
+#ranking-container {
+    flex: 0 0 auto;
+    height: auto;
+    max-height: 32vh;
+    margin: 0;
+    padding: 14px;
+    overflow-y: auto;
+    border: 1px solid rgba(148, 163, 184, .18);
+    border-radius: 12px;
+    background: rgba(15, 23, 42, .78);
+    color: #e2e8f0;
+    text-align: left;
+}
+
+.ranking-item {
+    padding: 9px 4px;
+    border-bottom: 1px solid rgba(148, 163, 184, .14);
+    color: #cbd5e1;
+    font-size: .9rem;
+}
+
+#sortear-btn {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    min-height: 58px;
+    margin: 0;
+    padding: 15px;
+    font-size: .9rem;
+    letter-spacing: .04em;
+}
+
+#log-central {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 280px;
+    margin: 0;
+    padding: 12px;
+    border: 1px solid rgba(148, 163, 184, .18);
+    border-radius: 12px;
+    background: rgba(15, 23, 42, .78);
+    color: #e2e8f0;
+}
+
+.log-item {
+    margin-bottom: 10px;
+    padding: 12px;
+    overflow-wrap: anywhere;
+    border: 1px solid rgba(148, 163, 184, .14);
+    border-radius: 10px;
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+.log-item .item-image {
+    display: block;
+    margin: 8px auto;
+    background: rgba(15, 23, 42, .7);
+}
+
+/* Chat */
+body > .flex.flex-grow > .w-1\/5:last-of-type {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#log-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#log-container > span {
+    padding: 10px 12px;
+    overflow-wrap: anywhere;
+    border: 1px solid rgba(148, 163, 184, .12);
+    border-radius: 10px;
+    background: rgba(30, 41, 59, .78);
+    color: #cbd5e1;
+    font-size: .85rem;
+    line-height: 1.45;
+}
+
+#log-container > span b {
+    color: #a5b4fc;
+}
+
+/* Ajuda e modal */
+.help-btn {
+    z-index: 20;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(148, 163, 184, .28);
+    background: #1e293b;
+    color: #f8fafc;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, .2);
+}
+
+.modal {
+    z-index: 1001;
+    width: min(420px, calc(100vw - 32px));
+    border: 1px solid rgba(148, 163, 184, .22);
+    border-radius: 18px;
+    background: #111827;
+    color: #f8fafc;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .45);
+}
+
+.modal p {
+    overflow-wrap: anywhere;
+}
+
+.overlay {
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+    background: rgba(2, 6, 23, .72);
+}
+
+/* Tablets */
+@media (max-width: 1100px) {
+    body > .flex.flex-grow {
+        grid-template-columns: minmax(0, 1.3fr) minmax(260px, .9fr);
+    }
+
+    body > .flex.flex-grow > .w-1\/5:last-of-type {
+        grid-column: 1 / -1;
+        max-height: 360px;
+    }
+
+    body > .bg-blue-600 > .mx-auto {
+        margin-left: 0;
+    }
+}
+
+/* Celulares */
+@media (max-width: 700px) {
+    body > .bg-blue-600 {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    body > .bg-blue-600 > .flex:first-child {
+        width: 100%;
+    }
+
+    body > .bg-blue-600 input[type="text"] {
+        flex: 1 1 160px;
+        min-width: 0;
+    }
+
+    body > .bg-blue-600 > .mx-auto {
+        width: 100%;
+        margin: 0;
+        white-space: normal;
+    }
+
+    body > .flex.flex-grow {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        padding: 12px;
+    }
+
+    body > .flex.flex-grow > .w-3\/5,
+    body > .flex.flex-grow > .w-1\/5,
+    body > .flex.flex-grow > .main-container {
+        grid-column: auto;
+        max-height: none;
+    }
+
+    body > .flex.flex-grow > .w-3\/5 {
+        order: 1;
+    }
+
+    body > .flex.flex-grow > .main-container {
+        order: 2;
+    }
+
+    body > .flex.flex-grow > .w-1\/5:last-of-type {
+        order: 3;
+        max-height: 300px;
+    }
+
+    #player-list > li {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    #player-list > li > div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .item-image {
+        width: 72px;
+        height: 72px;
+    }
+
+    #log-central {
+        min-height: 240px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
+
     </style>
 </head>
 
