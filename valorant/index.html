@@ -180,6 +180,39 @@ body > .bg-blue-600 > .mx-auto {
     filter: none;
 }
 
+.start-registration-btn[hidden] { display: none; }
+.start-registration-btn {
+    min-height: 42px;
+    padding: 9px 20px;
+    border: 2px solid #fef3c7;
+    border-radius: 12px;
+    color: #422006;
+    background: linear-gradient(135deg, #fde047, #f59e0b);
+    box-shadow: 0 0 0 3px rgba(250, 204, 21, .2), 0 7px 22px rgba(245, 158, 11, .4);
+    font-size: .95rem;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    animation: start-registration-glow 1.8s ease-in-out infinite alternate;
+}
+.start-registration-btn:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.04);
+    filter: brightness(1.08);
+}
+.start-registration-btn:disabled {
+    border-color: rgba(203, 213, 225, .25);
+    color: #94a3b8;
+    background: #334155;
+    box-shadow: none;
+    animation: none;
+    cursor: not-allowed;
+}
+@keyframes start-registration-glow {
+    from { box-shadow: 0 0 0 3px rgba(250, 204, 21, .16), 0 5px 18px rgba(245, 158, 11, .28); }
+    to { box-shadow: 0 0 0 5px rgba(250, 204, 21, .24), 0 8px 25px rgba(245, 158, 11, .48); }
+}
+
 body > .bg-blue-600 > .flex:nth-child(2) {
     gap: 9px;
     margin-left: 0;
@@ -373,12 +406,39 @@ body > .flex.flex-grow > .main-container {
 }
 
 .winner-presence-alert {
+    position: relative;
+    overflow: visible;
     padding: 12px 14px;
     border: 1px solid rgba(52, 211, 153, .35);
     border-radius: 12px;
     background: rgba(6, 78, 59, .35);
     color: #a7f3d0;
     font-size: .9rem;
+}
+.winner-presence-alert.presence-confirmed {
+    animation: presence-confirmed .7s ease-out both;
+}
+.presence-particle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    color: #fde68a;
+    font-size: 1.2rem;
+    line-height: 1;
+    pointer-events: none;
+    text-shadow: 0 0 10px rgba(253, 230, 138, .95), 0 0 22px rgba(52, 211, 153, .7);
+    animation: presence-particle .95s cubic-bezier(.16, .8, .3, 1) forwards;
+}
+@keyframes presence-confirmed {
+    0% { transform: scale(.94); box-shadow: 0 0 0 rgba(52, 211, 153, 0); }
+    45% { transform: scale(1.04); box-shadow: 0 0 28px rgba(52, 211, 153, .45); }
+    100% { transform: scale(1); box-shadow: 0 0 14px rgba(52, 211, 153, .18); }
+}
+@keyframes presence-particle {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(.25) rotate(0); }
+    18% { opacity: 1; transform: translate(-50%, -50%) scale(1.15) rotate(30deg); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--particle-x)), calc(-50% + var(--particle-y))) scale(.35) rotate(115deg); }
 }
 
 .winner-presence-alert[hidden],
@@ -390,6 +450,12 @@ body > .flex.flex-grow > .main-container {
     width: 100%;
     min-height: 48px;
     padding: 12px 14px;
+}
+
+.restart-game-btn {
+    border-color: rgba(251, 191, 36, .35);
+    background: linear-gradient(135deg, #b45309, #d97706);
+    box-shadow: 0 5px 16px rgba(217, 119, 6, .2);
 }
 
 #log-central {
@@ -681,6 +747,7 @@ body > .flex.flex-grow > .main-container {
         <div class="flex items-center space-x-1 ml-4">
             <input type="checkbox" id="toggle-feature" class="h-5 w-5" />
             <label for="toggle-feature" class="text-white text-lg">Somente subs?</label>
+            <button id="start-registration-btn" class="start-registration-btn" type="button" disabled>Iniciar</button>
         </div>
         <!-- Centralização do título -->
         <div class="mx-auto">Bingo do Valorant</div>
@@ -703,7 +770,7 @@ body > .flex.flex-grow > .main-container {
         <div class="w-3/5 bg-white border-r border-gray-300 overflow-y-auto p-4">
             <p class="font-bold text-lg mb-4">Lista de Jogadores:</p>
             <div id="join-prompt" class="join-prompt" role="status" aria-live="polite" hidden>
-                <span class="join-prompt-title">Participe do Bingo!</span>
+                <span id="join-prompt-title" class="join-prompt-title">Inscrições fechadas</span>
                 <p>Para entrar no sorteio, envie este comando no chat da Twitch:</p>
                 <code>!participar</code>
             </div>
@@ -720,7 +787,7 @@ body > .flex.flex-grow > .main-container {
             </div>
 
             <!-- Botão de sortear ocupando 10% da tela -->
-            <button id="sortear-btn" class="button fixed-button h-[10vh]">Sortear novo item</button>
+            <button id="sortear-btn" class="button fixed-button h-[10vh]" disabled>Sortear novo item</button>
 
             <div id="winner-wait" class="winner-wait" role="status" aria-live="polite" hidden>
                 <span id="winner-wait-label"></span>
@@ -732,6 +799,9 @@ body > .flex.flex-grow > .main-container {
             </button>
             <button id="remove-winner-btn" class="button remove-winner-btn" type="button" hidden>
                 Remover jogador e continuar sorteio
+            </button>
+            <button id="restart-game-btn" class="button remove-winner-btn restart-game-btn" type="button" hidden>
+                Começar novamente
             </button>
 
             <!-- Log central ocupando 60% da tela -->
@@ -757,6 +827,7 @@ body > .flex.flex-grow > .main-container {
         let itemsForEachPlayer = 6;
         let twitchChannel = "omiuner";
         let twitchConnected = false;
+        let registrationOpen = false;
         let somenteSubs = false;
         let skinsLoaded = null;
         let winnerWaitStartedAt = null;
@@ -785,7 +856,25 @@ body > .flex.flex-grow > .main-container {
         }
 
         function updateJoinPrompt() {
-            document.getElementById('join-prompt').hidden = !twitchConnected || itensSorteados.length > 0;
+            const prompt = document.getElementById('join-prompt');
+            prompt.hidden = !twitchConnected || itensSorteados.length > 0;
+            document.getElementById('start-registration-btn').disabled = !twitchConnected;
+            document.getElementById('join-prompt-title').textContent = registrationOpen
+                ? 'Participe do Bingo!'
+                : 'Inscrições fechadas';
+            prompt.querySelector('p').textContent = registrationOpen
+                ? 'Para entrar no sorteio, envie este comando no chat da Twitch:'
+                : 'Streamer: clique em Iniciar para abrir as inscrições. Depois, o chat pode enviar:';
+        }
+
+        function startRegistration() {
+            if (!twitchConnected || itensSorteados.length > 0) return;
+            registrationOpen = true;
+            document.getElementById('toggle-feature').disabled = true;
+            document.getElementById('start-registration-btn').hidden = true;
+            document.getElementById('sortear-btn').disabled = false;
+            updateJoinPrompt();
+            addEventLog('Inscrições abertas. O chat já pode enviar !participar.', 'game');
         }
 
         function formatElapsedTime(totalSeconds) {
@@ -812,6 +901,7 @@ body > .flex.flex-grow > .main-container {
             document.getElementById('winner-presence-alert').hidden = true;
             document.getElementById('continue-draw-btn').hidden = true;
             document.getElementById('remove-winner-btn').hidden = true;
+            document.getElementById('restart-game-btn').hidden = true;
             document.getElementById('winner-wait-label').textContent =
                 `Aguardando mensagem de ${awaitedWinnerNames.join(' ou ')}.`;
             document.getElementById('winner-wait').hidden = false;
@@ -845,9 +935,24 @@ body > .flex.flex-grow > .main-container {
             document.getElementById('winner-wait').hidden = true;
             document.getElementById('remove-winner-btn').hidden = true;
             const alert = document.getElementById('winner-presence-alert');
-            alert.textContent = `Presença confirmada por ${winner}.`;
+            alert.replaceChildren(document.createTextNode(`Presença confirmada por ${winner}.`));
+            alert.classList.remove('presence-confirmed');
+            void alert.offsetWidth;
+            alert.classList.add('presence-confirmed');
+            for (let index = 0; index < 10; index++) {
+                const angle = (Math.PI * 2 * index) / 10;
+                const particle = document.createElement('span');
+                particle.className = 'presence-particle';
+                particle.setAttribute('aria-hidden', 'true');
+                particle.textContent = '✦';
+                particle.style.setProperty('--particle-x', `${Math.round(Math.cos(angle) * 90)}px`);
+                particle.style.setProperty('--particle-y', `${Math.round(Math.sin(angle) * 46)}px`);
+                alert.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
             alert.hidden = false;
             document.getElementById('continue-draw-btn').hidden = false;
+            document.getElementById('restart-game-btn').hidden = false;
         }
 
         function continueDrawForMoreWinners() {
@@ -860,6 +965,7 @@ body > .flex.flex-grow > .main-container {
             document.getElementById('winner-wait').hidden = true;
             document.getElementById('winner-presence-alert').hidden = true;
             document.getElementById('continue-draw-btn').hidden = true;
+            document.getElementById('restart-game-btn').hidden = true;
             document.getElementById('sortear-btn').disabled = false;
             addEventLog('Sorteio retomado para buscar outro vencedor.', 'game');
         }
@@ -885,10 +991,46 @@ body > .flex.flex-grow > .main-container {
             document.getElementById('winner-presence-alert').hidden = true;
             document.getElementById('continue-draw-btn').hidden = true;
             document.getElementById('remove-winner-btn').hidden = true;
+            document.getElementById('restart-game-btn').hidden = true;
             document.getElementById('winner-wait-time').textContent = '00:00';
             document.getElementById('sortear-btn').disabled = false;
             updateRanking();
             addEventLog(`Jogador${removedNames.size > 1 ? 'es' : ''} sem presença removido${removedNames.size > 1 ? 's' : ''}; sorteio retomado.`, 'error');
+        }
+
+        function restartGame() {
+            const confirmed = window.confirm(
+                'Tem certeza que deseja começar novamente? A lista de jogadores e o progresso do sorteio serão zerados, e todos terão que se inscrever novamente pelo chat com !participar.'
+            );
+            if (!confirmed) return;
+
+            if (winnerWaitTimer !== null) clearInterval(winnerWaitTimer);
+            if (winnerWaitTimeout !== null) clearTimeout(winnerWaitTimeout);
+            winnerWaitTimer = null;
+            winnerWaitTimeout = null;
+            winnerWaitStartedAt = null;
+            awaitedWinnerNames = [];
+
+            players = [];
+            registrationOpen = false;
+            document.getElementById('toggle-feature').disabled = false;
+            winnerList = [];
+            presenceConfirmed.clear();
+            itensSorteaveis = [];
+            itensSorteados = [];
+            playerList.innerHTML = '';
+            document.getElementById('log-central').innerHTML = '';
+            document.getElementById('event-log').innerHTML = '';
+            document.getElementById('winner-wait').hidden = true;
+            document.getElementById('winner-presence-alert').hidden = true;
+            document.getElementById('continue-draw-btn').hidden = true;
+            document.getElementById('remove-winner-btn').hidden = true;
+            document.getElementById('restart-game-btn').hidden = true;
+            document.getElementById('start-registration-btn').hidden = false;
+            document.getElementById('winner-wait-time').textContent = '00:00';
+            document.getElementById('sortear-btn').disabled = true;
+            updateRanking();
+            updateJoinPrompt();
         }
 
         function initializeTMI() {
@@ -924,8 +1066,8 @@ body > .flex.flex-grow > .main-container {
                 }
 
                 if (!message.toLowerCase().startsWith('!participar') || itensSorteados.length > 0) return;
+                if (!registrationOpen) return;
                 if (somenteSubs && !tags.subscriber) {
-                    addEventLog(`${tags.username} tentou participar, mas o bingo está restrito a subs.`, 'error');
                     return;
                 }
 
@@ -964,7 +1106,7 @@ body > .flex.flex-grow > .main-container {
         let players = [];
 
         function tryToAddPlayer(tags) {
-            if (itensSorteados.length > 0) return;
+            if (!registrationOpen || itensSorteados.length > 0) return;
 
             if (!skinList.length || skinList.length < itemsForEachPlayer) {
                 addEventLog('Não foi possível participar: as skins não carregaram corretamente. Atualize a página e tente novamente.', 'error');
@@ -1155,6 +1297,8 @@ body > .flex.flex-grow > .main-container {
         document.getElementById('sortear-btn').addEventListener('click', sortearItem);
         document.getElementById('continue-draw-btn').addEventListener('click', continueDrawForMoreWinners);
         document.getElementById('remove-winner-btn').addEventListener('click', removeAwaitingWinnersAndContinue);
+        document.getElementById('restart-game-btn').addEventListener('click', restartGame);
+        document.getElementById('start-registration-btn').addEventListener('click', startRegistration);
         const helpModal = document.getElementById('help-modal');
         const closeHelp = () => {
             helpModal.hidden = true;
